@@ -26,6 +26,27 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
+        activateProgessBar: (nameOfBar) => {
+            // name of bar can be the name of the element on the first slide set to show for the rest of the project 
+            eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
+
+                let interval = setInterval(enlargeBar, 50, false);
+                function enlargeBar() {
+                    let shape;
+                    if (shape = document.getElementById(`${nameOfBar}c`)) {
+                        let w = Math.round(window.totalWidth / (window.cpInfoSlideCount / window.cpInfoCurrentSlide));
+                        console.log(`The window width is ${window.totalWidth}, slide count is ${window.cpInfoSlideCount} and current slide ${window.cpInfoCurrentSlide}`);
+                        shape.style.width = w + "px";
+                        clearInterval(interval);
+                        interval = null;
+                    }
+                }
+
+            })
+
+
+        },
+
         hideSubmitButton: function(slide) {
             if (!slide) slide = interfaceObj.getVariableValue('cpInfoCurrentSlideLabel');
             var submitButton = submitButtonMap[slide];
@@ -69,12 +90,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
         jumpToPrevBookmark: function(bookmark) {
             var getSlides = cp.model.data.project_main.slides.split(',');
 
-            var currentSlide = interface.getVariableValue('cpInfoCurrentSlide')
+            var currentSlide = interfaceObj.getVariableValue('cpInfoCurrentSlide')
 
-            for (var i = currentSlide - 2; i >= 0; i--) {
+            for (let i = currentSlide - 2; i >= 0; i--) {
 
                 if (cp.model.data[getSlides[i]].lb.match(bookmark) !== null) {
-                    interface.setVariableValue('cpCmndGotoSlide', i);
+                    interfaceObj.setVariableValue('cpCmndGotoSlide', i);
 
 
                     break;
@@ -86,12 +107,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
         jumpToNextBookmark: function(bookmark) {
             var getSlides = cp.model.data.project_main.slides.split(',');
 
-            var currentSlide = interface.getVariableValue('cpInfoCurrentSlide')
+            var currentSlide = interfaceObj.getVariableValue('cpInfoCurrentSlide')
 
-            for (var i = currentSlide; i < getSlides.length; i++) {
+            for (let i = currentSlide; i < getSlides.length; i++) {
 
                 if (cp.model.data[getSlides[i]].lb.match(bookmark) !== null) {
-                    interface.setVariableValue('cpCmndGotoSlide', i);
+                    interfaceObj.setVariableValue('cpCmndGotoSlide', i);
 
 
                     break;
@@ -104,16 +125,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
             //  playButton is a string representing the si id of the play button e.g. 'si61740';
             //  pauseButton is a string representing the si id of the pause button e.g.  'si59879';
 
-            eventEmitter.addEventListener('CPAPI_SLIDEENTER', function(e) {
 
-                cp.show(pauseButton);
-                cp.hide(playButton);
-                interfaceObj.setVariableValue('var_PlayPause', 1)
 
-            })
+            cp.show(pauseButton);
+            cp.hide(playButton);
+
+
+
         },
 
-        recordUserInteraction: function(scrollTextVariable){
+        recordUserInteraction: function(scrollTextVariable) {
             // from TLC Media Design
             SCORM2004_RecordInteraction("Student Response", scrollTextVariable, true, 0, 0, 0, 0, 0, Date(), "SCORM2004_INTERACTION_TYPE_LONG_FILL_IN");
         }
@@ -122,9 +143,3 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
 })
-
-
-
-
-
-// you can call this function to jump to the next slide tagge
