@@ -1,0 +1,16 @@
+{
+  "name": "captivate_script",
+  "version": "1.0.0",
+  "description": "Javascript library for captivate",
+  "main": "pdidakt_captivate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel src -d lib"
+  },
+  "author": "Ryan Scharfer",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0"
+  }
+}
