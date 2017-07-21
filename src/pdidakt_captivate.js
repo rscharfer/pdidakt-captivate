@@ -26,20 +26,24 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
-        activateProgessBar: (nameOfBar) => {
+        activateProgessBar: (nameOfBar,fullWidth) => {
             // name of bar can be the name of the element on the first slide set to show for the rest of the project 
+            nameOfBar+='c';
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
-                let interval = setInterval(enlargeBar, 50, false);
+                let interval = setInterval(checkForBar, 50, false);
+                const checkForBar = (nameOfBar) => {
+                  if (document.getElementById(nameOfBar)){
+                    enlargeBar();
+                    clearInterval(interval);
+                    interval = null;
+                  } 
+                }
+                
                 function enlargeBar() {
-                    let shape;
-                    if (shape = document.getElementById(`${nameOfBar}c`)) {
-                        let w = Math.round(window.totalWidth / (window.cpInfoSlideCount / window.cpInfoCurrentSlide));
+                        let w = Math.round(fullWidth / (window.cpInfoSlideCount / window.cpInfoCurrentSlide));
                         console.log(`The window width is ${window.totalWidth}, slide count is ${window.cpInfoSlideCount} and current slide ${window.cpInfoCurrentSlide}`);
                         shape.style.width = w + "px";
-                        clearInterval(interval);
-                        interval = null;
-                    }
                 }
 
             })
