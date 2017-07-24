@@ -139,6 +139,56 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         },
 
+        // 
+        showCorrectImageOnPlayPauseChange(playButton, pauseButton){
+        	eventEmitterObj.addEventListener('CPAPI_MOVIERESUME',()=> {
+
+        		cp.show(pauseButton); 
+        		cp.hide(playButton);
+        	
+
+
+        	})
+
+            eventEmitterObj.addEventListener('CPAPI_MOVIESTART',()=> {
+
+                cp.show(pauseButton); 
+                cp.hide(playButton);
+                
+
+
+            })
+
+        	eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE',()=> 
+
+        		{
+        			cp.hide(pauseButton); 
+        			cp.show(playButton);
+        			
+        		})
+        },
+
+        getPlayPauseFunction : (()=>{
+        	let isPlaying = 1;
+        	return () => {
+        		if(isPlaying) {
+        			isPlaying = 0;
+        			interfaceObj.pause();
+                    console.log('paused')
+        		}
+        		else {
+        			isPlaying = 1;
+        			interfaceObj.play();
+                    console.log('played')
+        		}
+        	}
+        	
+        })(),
+
+       
+
+
+
         recordUserInteraction: function(scrollTextVariable) {
             // from TLC Media Design
             SCORM2004_RecordInteraction("Student Response", scrollTextVariable, true, 0, 0, 0, 0, 0, Date(), "SCORM2004_INTERACTION_TYPE_LONG_FILL_IN");
