@@ -26,25 +26,27 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
-        activateProgressBar: (nameOfBar,fullWidth) => {
+        activateProgressBar: (nameOfBar, fullWidth) => {
             // name of bar can be the name of the element on the first slide set to show for the rest of the project 
-            nameOfBar+='c';
+            nameOfBar += 'c';
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
-                let interval = setInterval(()=>{checkForBar(nameOfBar)}, 50, false);
+                let interval = setInterval(() => {
+                    checkForBar(nameOfBar)
+                }, 50, false);
                 const checkForBar = (nameOfBar) => {
                     let shape;
-                  if (shape = document.getElementById(nameOfBar)){
-                    enlargeBar(shape);
-                    clearInterval(interval);
-                    interval = null;
-                  } 
+                    if (shape = document.getElementById(nameOfBar)) {
+                        enlargeBar(shape);
+                        clearInterval(interval);
+                        interval = null;
+                    }
                 }
-                
+
                 function enlargeBar(shape) {
-                        let w = Math.round(fullWidth / (window.cpInfoSlideCount / window.cpInfoCurrentSlide));
-                        console.log(`The window width is ${window.totalWidth}, slide count is ${window.cpInfoSlideCount} and current slide ${window.cpInfoCurrentSlide}`);
-                        shape.style.width = w + "px";
+                    let w = Math.round(fullWidth / (window.cpInfoSlideCount / window.cpInfoCurrentSlide));
+                    console.log(`The window width is ${window.totalWidth}, slide count is ${window.cpInfoSlideCount} and current slide ${window.cpInfoCurrentSlide}`);
+                    shape.style.width = w + "px";
                 }
 
             })
@@ -125,7 +127,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
         },
 
-        hidePlayShowPause: function(playButton,pauseButton) {
+        hidePlayShowPause: function(playButton, pauseButton) {
 
             //  playButton is a string representing the si id of the play button e.g. 'si61740';
             //  pauseButton is a string representing the si id of the pause button e.g.  'si59879';
@@ -140,52 +142,146 @@ window.addEventListener("moduleReadyEvent", function(e) {
         },
 
         // 
-        showCorrectImageOnPlayPauseChange(playButton, pauseButton){
-        	eventEmitterObj.addEventListener('CPAPI_MOVIERESUME',()=> {
+        showCorrectImageOnPlayPauseChange(playButton, pauseButton) {
+            eventEmitterObj.addEventListener('CPAPI_MOVIERESUME', () => {
 
-        		cp.show(pauseButton); 
-        		cp.hide(playButton);
-        	
-
-
-        	})
-
-            eventEmitterObj.addEventListener('CPAPI_MOVIESTART',()=> {
-
-                cp.show(pauseButton); 
+                cp.show(pauseButton);
                 cp.hide(playButton);
-                
+
 
 
             })
 
-        	eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE',()=> 
+            eventEmitterObj.addEventListener('CPAPI_MOVIESTART', () => {
 
-        		{
-        			cp.hide(pauseButton); 
-        			cp.show(playButton);
-        			
-        		})
+                cp.show(pauseButton);
+                cp.hide(playButton);
+
+
+
+            })
+
+            eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', () =>
+
+                {
+                    cp.hide(pauseButton);
+                    cp.show(playButton);
+
+                })
         },
 
-        getPlayPauseFunction : (()=>{
-        	let isPlaying = 1;
-        	return () => {
-        		if(isPlaying) {
-        			isPlaying = 0;
-        			interfaceObj.pause();
-                    console.log('paused')
-        		}
-        		else {
-        			isPlaying = 1;
-        			interfaceObj.play();
-                    console.log('played')
-        		}
-        	}
-        	
+        togglePlayPause: (() => {
+            let isPlaying = 1;
+            return () => {
+                if (isPlaying) {
+                    isPlaying = 0;
+                    interfaceObj.pause();
+
+                } else {
+                    isPlaying = 1;
+                    interfaceObj.play();
+
+                }
+            }
+
         })(),
 
-       
+        toggleTOC(TOCButton, playButton, pauseButton) {
+
+            var playing = true;
+
+            addSlideEnterListener()
+
+            function addSlideEnterListener() {
+
+                // call the play function and activate the buttons on every slide enter
+                eventEmitter.addEventListener('CPAPI_SLIDEENTER', function(e) {
+
+                    play();
+
+                    setTimeout(activateButtons, 1000);
+                });
+            }
+
+            function play() {
+
+                // if the TOC is visible, close it
+                if (window.cpCmndTOCVisible) {
+
+                    window.cpCmndTOCVisible = false;
+
+                }
+
+                // reset playing to true
+                playing = true;
+                // hide play button, show pause button
+                cp.hide(playButton);
+                cp.show(pauseButton);
+
+                // play the project again
+                window.cpCmndResume = 1;
+
+
+                // after a tenth of a second hide play, show pause and play the project again
+                setTimeout(function() {
+
+
+                    cp.hide(playButton);
+                    cp.show(pauseButton);
+                    window.cpCmndResume = 1;
+
+
+
+
+
+                }, 100)
+            }
+
+            function pause() {
+
+                // hide pause button, show play, playing is false and project is paused
+                window.cpCmndPause = 1;
+                cp.hide(pauseButton);
+                cp.show(playButton);
+                playing = false;
+            }
+            function activateButtons() {
+
+
+                var playButtonDOM = document.getElementById(playButton);
+                var pauseButtonDOM = document.getElementById(pauseButton);
+                var TOCButtonDOM = document.getElementById(TOCButton);
+
+                if (playButtonDOM && pauseButtonDOM && TOCButtonDOM) {
+                    // if there is a play, pause, and TOC button
+
+                    TOCButtonDOM.addEventListener('click', function() {
+                        // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
+                        if (!window.cpCmndTOCVisible) {
+                            pause()
+                            window.cpCmndTOCVisible = true;
+
+                            // it toc button is hwoing, play button when clicked
+                        } else {
+                            play()
+
+
+                        }
+                    });
+
+                    // add correct event listeners to play and pause button
+                    playButtonDOM.addEventListener('click', play, false);
+                    pauseButtonDOM.addEventListener('click', pause, false);
+
+
+
+
+                }
+            }
+
+        },
+
+
 
 
 
@@ -198,3 +294,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
 })
+
+
+const getName = new Promise((resolve,reject)=>{
+
+    window.setTimeout(()=>{
+
+        var name = 'Ryan';
+        resolve(name);
+    },1000)
+})
+
+
+getName.then((x)=>console.log(`Here it is!: ${x}`));
