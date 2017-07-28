@@ -187,9 +187,11 @@ window.addEventListener("moduleReadyEvent", function(e) {
         })(),
 
         addToggleToTOC: (tocButton)=>{
-            const toc = document.getElementById(tocButton);
-            toc.addEventListener('click',()=>{
-                cp.showHideTOC;
+            eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', function(e) {
+                window.setTimeout(()=>{
+                     const toc = document.getElementById(tocButton);
+                     toc.addEventListener('click',()=>{ cp.showHideTOC; })
+                },500)
             })
         },
 
@@ -202,7 +204,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             function addSlideEnterListener() {
 
                 // call the play function and activate the buttons on every slide enter
-                eventEmitter.addEventListener('CPAPI_SLIDEENTER', function(e) {
+                eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', function(e) {
 
                     play();
 
