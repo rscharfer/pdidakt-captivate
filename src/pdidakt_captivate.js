@@ -186,7 +186,14 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         })(),
 
-        toggleTOC(TOCButton, playButton, pauseButton) {
+        addToggleToTOC: (tocButton)=>{
+            const toc = document.getElementById(tocButton);
+            toc.addEventListener('click',()=>{
+                cp.showHideTOC;
+            })
+        },
+
+        wireTogglePlayPause(TOCButton, playButton, pauseButton) {
 
             var playing = true;
 
@@ -307,3 +314,6 @@ const getName = new Promise((resolve,reject)=>{
 
 
 getName.then((x)=>console.log(`Here it is!: ${x}`));
+
+
+const hello = "test"
