@@ -26,6 +26,14 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
+        lookForSIs:(si)=>{
+             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
+
+                const element = document.getElementById(si);
+                si?console.log(`The element ${si} exists.`):console.log(`The element ${si} does not yet exist.`);
+             })
+        },
+
         activateProgressBar: (nameOfBar, fullWidth) => {
             // name of bar can be the name of the element on the first slide set to show for the rest of the project 
             nameOfBar += 'c';
@@ -305,17 +313,3 @@ window.addEventListener("moduleReadyEvent", function(e) {
 })
 
 
-const getName = new Promise((resolve,reject)=>{
-
-    window.setTimeout(()=>{
-
-        var name = 'Ryan';
-        resolve(name);
-    },1000)
-})
-
-
-getName.then((x)=>console.log(`Here it is!: ${x}`));
-
-
-const hello = "test"
