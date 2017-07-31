@@ -30,7 +30,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
              eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
                 const element = document.getElementById(si);
-                si?console.log(`The element ${si} exists.`):console.log(`The element ${si} does not yet exist.`);
+                return element?true:false;
              })
         },
 
@@ -194,12 +194,20 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         })(),
 
+        
+
         addToggleToTOC: (tocButton)=>{
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', function(e) {
-                window.setTimeout(()=>{
-                     const toc = document.getElementById(tocButton);
-                     toc.addEventListener('click',()=>{ cp.showHideTOC; })
-                },500)
+
+                const button = document.getElementById(tocButton);
+                const toc = document.getElementById("toc");
+
+                if (button && toc) button.addEventListener('click',()=>{
+
+                    if(interfaceObj.getVariableValue('cpCmndTOCVisible')) toc.animator.hideTOC();
+                    else toc.animator.hideTOC();
+                })
+                else throw Error('The toggle button with this si number cannot be found.',button,toc)
             })
         },
 
