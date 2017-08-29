@@ -26,12 +26,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
-        lookForSIs:(si)=>{
-             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
+        lookForSIs: (si) => {
+            eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
                 const element = document.getElementById(si);
-                return element?true:false;
-             })
+                return element ? true : false;
+            })
         },
 
         activateProgressBar: (nameOfBar, fullWidth) => {
@@ -194,23 +194,23 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         })(),
 
-        
 
-        addToggleToTOC: (tocButton)=>{
+
+        addToggleToTOC: (tocButton) => {
             // the click event listener checks to see if the toc is visible
             // if so, close
             // if not, open
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', function(e) {
-               
+
                 const button = document.getElementById(tocButton);
                 const toc = document.getElementById("toc");
-                 console.log("slide entered",button,toc)
-                if (button && toc) button.addEventListener('click',()=>{
+                console.log("slide entered", button, toc)
+                if (button && toc) button.addEventListener('click', () => {
 
-                    if(interfaceObj.getVariableValue('cpCmndTOCVisible')) toc.animator.hideTOC();
+                    if (interfaceObj.getVariableValue('cpCmndTOCVisible')) toc.animator.hideTOC();
                     else toc.animator.hideTOC();
                 })
-                else throw Error('The toggle button with this si number cannot be found.',button,toc)
+                else throw Error('The toggle button with this si number cannot be found.', button, toc)
             })
         },
 
@@ -273,15 +273,27 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 cp.show(playButton);
                 playing = false;
             }
-            
+
+            function getButton(si, top, left) {
+
+            	const id = '#' + si;
+
+                if (document.querySelector(id)) return document.querySelector(id)
+
+				else if (top && bottom) return this.findDOMElementByLocation(top, left)
+
+				else console.error("A button with id ${id} and top value of ${top} and bottom value of ${left} was not found.")
+          
+            }
+
+     
+
             function activateButtons() {
 
                 var collapseIcon = document.querySelector("#collapseIcon");
-                var playButtonDOM = document.getElementById(playButton);
-                var pauseButtonDOM = document.getElementById(pauseButton);
-                var TOCButtonDOM = document.getElementById(TOCButton);
-
-                if (!TOCButtonDOM) TOCButtonDOM=this.findDOMElementByLocation(616,15);
+                var playButtonDOM = getButton(playButton);
+                var pauseButtonDOM = getButton(pauseButton);
+                var TOCButtonDOM = getButton(TOCButton,616,15);
 
                 if (playButtonDOM && pauseButtonDOM && TOCButtonDOM) {
                     // if there is a play, pause, and TOC button
@@ -301,7 +313,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     });
 
                     // add correct event listeners to play and pause button
-                    if(collapseIcon) collapseIcon.addEventListener('click',play,false);
+                    if (collapseIcon) collapseIcon.addEventListener('click', play, false);
                     playButtonDOM.addEventListener('click', play, false);
                     pauseButtonDOM.addEventListener('click', pause, false);
 
@@ -315,28 +327,28 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         findDOMElementByLocation(top, left) {
 
-                if (typeof top !== 'number' || typeof left !== 'number') console.error("The findDOMElementByLocation only expects numbers as arguments")
+            if (typeof top !== 'number' || typeof left !== 'number') console.error("The findDOMElementByLocation only expects numbers as arguments")
 
-                // convert arguments to strings
-                top = top + 'px', left = left + 'px';
+            // convert arguments to strings
+            top = top + 'px', left = left + 'px';
 
-                // assumes pertinent Captivate container is #div_Slide
-                const containerToSearch = document.querySelector("#div_Slide");
-                if (!containerToSearch) console.error("An element with the id 'div_Slide' was not found");
+            // assumes pertinent Captivate container is #div_Slide
+            const containerToSearch = document.querySelector("#div_Slide");
+            if (!containerToSearch) console.error("An element with the id 'div_Slide' was not found");
 
-                // assumes what we are looking for is a div
-                const allDivs = containerToSearch.querySelectorAll('div');
+            // assumes what we are looking for is a div
+            const allDivs = containerToSearch.querySelectorAll('div');
 
-                let element;
+            let element;
 
-                for (let div of allDivs) {
-                    if (div.style.top === top && div.style.left === left) {
-                        console.info(`Found a DOM Element at the location with an id of ${div.id}`);
-                        if (/^si\d+$/.exec(div.id)) return div
-                    }
+            for (let div of allDivs) {
+                if (div.style.top === top && div.style.left === left) {
+                    console.info(`Found a DOM Element at the location with an id of ${div.id}`);
+                    if (/^si\d+$/.exec(div.id)) return div
                 }
-                console.error("could not find a dom element at that location with an `si234-type` id");
-            },
+            }
+            console.error("could not find a dom element at that location with an `si234-type` id");
+        },
 
 
 
@@ -351,5 +363,3 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
 })
-
-
