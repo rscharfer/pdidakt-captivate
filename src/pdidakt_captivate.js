@@ -273,30 +273,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 cp.show(playButton);
                 playing = false;
             }
-            function findDOMElementByLocation(top, left) {
-
-                if (typeof top !== 'number' || typeof left !== 'number') console.error("The findDOMElementByLocation only expects numbers as arguments")
-
-                // convert arguments to strings
-                top = top + 'px', left = left + 'px';
-
-                // assumes pertinent Captivate container is #div_Slide
-                const containerToSearch = document.querySelector("#div_Slide");
-                if (!containerToSearch) console.error("An element with the id 'div_Slide' was not found");
-
-                // assumes what we are looking for is a div
-                const allDivs = containerToSearch.querySelectorAll('div');
-
-                let element;
-
-                for (let div of allDivs) {
-                    if (div.style.top === top && div.style.left === left) {
-                        console.info(`Found a DOM Element at the location with an id of ${div.id}`);
-                        if (/^si\d+$/.exec(div.id)) return div
-                    }
-                }
-                console.error("could not find a dom element at that location with an `si234-type` id");
-            }
+            
             function activateButtons() {
 
                 var collapseIcon = document.querySelector("#collapseIcon");
@@ -304,7 +281,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 var pauseButtonDOM = document.getElementById(pauseButton);
                 var TOCButtonDOM = document.getElementById(TOCButton);
 
-                if (!TOCButtonDOM) TOCButtonDOM=findDOMElementByLocation(616,15);
+                if (!TOCButtonDOM) TOCButtonDOM=this.findDOMElementByLocation(616,15);
 
                 if (playButtonDOM && pauseButtonDOM && TOCButtonDOM) {
                     // if there is a play, pause, and TOC button
@@ -335,6 +312,31 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
 
         },
+
+        findDOMElementByLocation(top, left) {
+
+                if (typeof top !== 'number' || typeof left !== 'number') console.error("The findDOMElementByLocation only expects numbers as arguments")
+
+                // convert arguments to strings
+                top = top + 'px', left = left + 'px';
+
+                // assumes pertinent Captivate container is #div_Slide
+                const containerToSearch = document.querySelector("#div_Slide");
+                if (!containerToSearch) console.error("An element with the id 'div_Slide' was not found");
+
+                // assumes what we are looking for is a div
+                const allDivs = containerToSearch.querySelectorAll('div');
+
+                let element;
+
+                for (let div of allDivs) {
+                    if (div.style.top === top && div.style.left === left) {
+                        console.info(`Found a DOM Element at the location with an id of ${div.id}`);
+                        if (/^si\d+$/.exec(div.id)) return div
+                    }
+                }
+                console.error("could not find a dom element at that location with an `si234-type` id");
+            },
 
 
 
