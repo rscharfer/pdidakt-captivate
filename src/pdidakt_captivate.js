@@ -274,26 +274,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 playing = false;
             }
 
-            function getButton(si, top, left) {
 
-            	const id = '#' + si;
 
-                if (document.querySelector(id)) return document.querySelector(id)
 
-				else if (top && bottom) return this.findDOMElementByLocation(top, left)
-
-				else console.error("A button with id ${id} and top value of ${top} and bottom value of ${left} was not found.")
-          
-            }
-
-     
 
             function activateButtons() {
 
-                var collapseIcon = document.querySelector("#collapseIcon");
-                var playButtonDOM = getButton(playButton);
-                var pauseButtonDOM = getButton(pauseButton);
-                var TOCButtonDOM = getButton(TOCButton,616,15);
+                var collapseIcon = this.getElementByIdOrLocation("collapseIcon");
+                var playButtonDOM = this.getElementByIdOrLocation(playButton);
+                var pauseButtonDOM = this.getElementByIdOrLocation(pauseButton);
+                var TOCButtonDOM = this.getElementByIdOrLocation(TOCButton, 616, 15);
 
                 if (playButtonDOM && pauseButtonDOM && TOCButtonDOM) {
                     // if there is a play, pause, and TOC button
@@ -348,6 +338,17 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 }
             }
             console.error("could not find a dom element at that location with an `si234-type` id");
+        },
+
+        getElementByIdOrLocation(id, top, left) {
+
+            id += '#';
+
+            if (document.querySelector(id)) return document.querySelector(id)
+
+            else if (top && bottom) return this.findDOMElementByLocation(top, left)
+
+            else console.error("A button with id ${id} and top value of ${top} and bottom value of ${left} was not found.")
         },
 
 
