@@ -1,4 +1,27 @@
-var interfaceObj, eventEmitterObj, pd;
+var interfaceObj, eventEmitterObj, pd, config = {};
+
+
+function configPlay(si, top, left) {
+
+    config.play = { si, top, left };
+}
+
+
+function configPause(si, top, left) {
+
+    config.pause = { si, top, left };
+}
+
+
+function configToc(si, top, left) {
+
+    config.toc = { si, top, left };
+}
+
+
+
+
+
 
 window.addEventListener("moduleReadyEvent", function(e) {
 
@@ -26,16 +49,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
-        playButton: { si: "si5387768" },
+        playButton: config.play,
 
-        pauseButton: { si: "si5387820" },
+        pauseButton: config.pause,
 
-        tocButton: { si: "si7565085", top: 616, left: 15 },
+        tocButton: config.toc,
 
 
         // technically the collapse buttons doesnt have a si it its id..
 
-        collapseButton : {si:'collapseIcon'},
+        collapseButton: { si: 'collapseIcon' },
 
         lookForSIs: (si) => {
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
@@ -233,7 +256,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             let self = this;
 
 
-           
+
 
 
 
@@ -245,7 +268,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 setTimeout(() => {
 
 
-                
+
 
                     const tocDom = self.getElementByIdOrLocation(tocConfigObject)
                     const playDom = self.getElementByIdOrLocation(playConfigObject)
@@ -277,7 +300,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         play(pause_si, play_si) {
 
-       
+
 
             // if the TOC is visible, close it
             if (window.cpCmndTOCVisible) {
@@ -323,42 +346,42 @@ window.addEventListener("moduleReadyEvent", function(e) {
         activateButtons(tocDom, playDom, pauseDom, collapseTocDom) {
 
             const self = this;
-            
-              
-                
-           
-
-                if (playDom && pauseDom && tocDom) {
-                    // if there is a play, pause, and TOC button
-
-                    tocDom.addEventListener('click', function() {
-                        // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
-            
-                        if (!window.cpCmndTOCVisible) {
-                            self.pause(self.pauseButton.si, self.playButton.si)
-                            window.cpCmndTOCVisible = true;
-
-                            // it toc button is hwoing, play button when clicked
-                        } else {
-                            self.play(self.pauseButton.si, self.playButton.si)
-
-
-                        }
-                    });
-
-                    // add correct event listeners to play and pause button
-                    if (collapseTocDom) collapseTocDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si) , false);
-                    playDom.addEventListener('click', () =>  self.play(self.pauseButton.si, self.playButton.si) , false);
-                    pauseDom.addEventListener('click', () => self.pause(self.pauseButton.si, self.playButton.si) , false);
 
 
 
 
-                }
+
+            if (playDom && pauseDom && tocDom) {
+                // if there is a play, pause, and TOC button
+
+                tocDom.addEventListener('click', function() {
+                    // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
+
+                    if (!window.cpCmndTOCVisible) {
+                        self.pause(self.pauseButton.si, self.playButton.si)
+                        window.cpCmndTOCVisible = true;
+
+                        // it toc button is hwoing, play button when clicked
+                    } else {
+                        self.play(self.pauseButton.si, self.playButton.si)
+
+
+                    }
+                });
+
+                // add correct event listeners to play and pause button
+                if (collapseTocDom) collapseTocDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si), false);
+                playDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si), false);
+                pauseDom.addEventListener('click', () => self.pause(self.pauseButton.si, self.playButton.si), false);
 
 
 
-        
+
+            }
+
+
+
+
 
         },
 
@@ -380,7 +403,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             for (let div of allDivs) {
                 if (div.style.top === top && div.style.left === left) {
-                   
+
                     if (/^si\d+$/.exec(div.id)) return div
                 }
             }
@@ -413,9 +436,15 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     }
 
-
-})
-
-window.addEventListener("moduleReadyEvent", function(e) {
     pd.wireTogglePlayPause(pd.tocButton, pd.playButton, pd.pauseButton);
 })
+
+
+
+
+
+
+// this is how you configure the script
+// configPlay('si5387768');
+// configPause('si5387820');
+// configToc('si7565085', 616, 15);
