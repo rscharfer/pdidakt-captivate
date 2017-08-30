@@ -214,72 +214,86 @@ window.addEventListener("moduleReadyEvent", function(e) {
             })
         },
 
+        playing: true,
+
         wireTogglePlayPause(TOCButton, playButton, pauseButton) {
 
-            var playing = true;
 
-            addSlideEnterListener()
 
-            function addSlideEnterListener() {
 
-                // call the play function and activate the buttons on every slide enter
-                eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', function(e) {
 
-                    play();
 
-                    setTimeout(activateButtons, 1000);
-                });
+
+            // call the play function and activate the buttons on every slide enter
+            eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
+
+                this.play(pauseButton, playButton);
+                this.activateButtons(TOCButton, playButton, pauseButton);
+            });
+
+
+
+
+
+
+           // this.activateButtons(TOCButton, playButton, pauseButton);
+
+
+
+
+
+
+
+        },
+
+        play(pauseButton, playButton) {
+
+            // if the TOC is visible, close it
+            if (window.cpCmndTOCVisible) {
+
+                window.cpCmndTOCVisible = false;
+
             }
 
-            function play() {
+            // reset playing to true
+            this.playing = true;
+            // hide play button, show pause button
+            cp.hide(playButton);
+            cp.show(pauseButton);
 
-                // if the TOC is visible, close it
-                if (window.cpCmndTOCVisible) {
+            // play the project again
+            window.cpCmndResume = 1;
 
-                    window.cpCmndTOCVisible = false;
 
-                }
+            // after a tenth of a second hide play, show pause and play the project again
+            setTimeout(function() {
 
-                // reset playing to true
-                playing = true;
-                // hide play button, show pause button
+
                 cp.hide(playButton);
                 cp.show(pauseButton);
-
-                // play the project again
                 window.cpCmndResume = 1;
 
 
-                // after a tenth of a second hide play, show pause and play the project again
-                setTimeout(function() {
-
-
-                    cp.hide(playButton);
-                    cp.show(pauseButton);
-                    window.cpCmndResume = 1;
 
 
 
+            }, 100)
+        },
 
+        pause(pauseButton, playButton) {
 
-                }, 100)
-            }
+            // hide pause button, show play, playing is false and project is paused
+            window.cpCmndPause = 1;
+            cp.hide(pauseButton);
+            cp.show(playButton);
+            this.playing = false;
+        },
 
-            function pause() {
+        activateButtons(TOCButton, playButton, pauseButton) {
 
-                // hide pause button, show play, playing is false and project is paused
-                window.cpCmndPause = 1;
-                cp.hide(pauseButton);
-                cp.show(playButton);
-                playing = false;
-            }
-
-
-
-
-
-            function activateButtons() {
-
+        	const self = this;
+            setTimeout(()=> {
+            	console.log('activate buttons body called')
                 var collapseIcon = this.getElementByIdOrLocation("collapseIcon");
                 var playButtonDOM = this.getElementByIdOrLocation(playButton);
                 var pauseButtonDOM = this.getElementByIdOrLocation(pauseButton);
@@ -290,28 +304,32 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                     TOCButtonDOM.addEventListener('click', function() {
                         // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
+                        console.log('toc button clicked')
                         if (!window.cpCmndTOCVisible) {
-                            pause()
+                            self.pause(pauseButton, playButton)
                             window.cpCmndTOCVisible = true;
 
                             // it toc button is hwoing, play button when clicked
                         } else {
-                            play()
+                            self.play(pauseButton, playButton)
 
 
                         }
                     });
 
                     // add correct event listeners to play and pause button
-                    if (collapseIcon) collapseIcon.addEventListener('click', play, false);
-                    playButtonDOM.addEventListener('click', play, false);
-                    pauseButtonDOM.addEventListener('click', pause, false);
+                    if (collapseIcon) collapseIcon.addEventListener('click', function(pauseButton, playButton) { self.play(pauseButton, playButton) }, false);
+                    playButtonDOM.addEventListener('click', function(pauseButton, playButton) { self.play(pauseButton, playButton) }, false);
+                    pauseButtonDOM.addEventListener('click', function(pauseButton, playButton) { self.pause(pauseButton, playButton) }, false);
 
 
 
 
                 }
-            }
+
+
+
+            }, 2000)
 
         },
 
@@ -342,13 +360,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         getElementByIdOrLocation(id, top, left) {
 
-            id += '#';
+            id = '#' + id;
+
+
+
 
             if (document.querySelector(id)) return document.querySelector(id)
 
-            else if (top && bottom) return this.findDOMElementByLocation(top, left)
+            else if (top && left) return this.findDOMElementByLocation(top, left)
 
-            else console.error("A button with id ${id} and top value of ${top} and bottom value of ${left} was not found.")
+            else console.error(`A button with id ${id} and top value of ${top} and left value of ${left} was not found.`)
         },
 
 
