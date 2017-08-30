@@ -26,6 +26,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     pd = {
 
+        playButton:{si:"si5387768"},
+
+        pauseButton:{si:"si5387820"},
+
+        tocButton:{si:"si7565085",top:616,left:15},
+
         lookForSIs: (si) => {
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
