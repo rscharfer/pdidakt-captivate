@@ -32,7 +32,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
     // the submit buttons of question slides and knowledge check slides have have a "qbt" property with value of "submit"
 
     var DRAGANDDROPSUBMITTYPE = 641;
-    var submitButtonMap = {};
+   
     var projectData = cp.model.data;
     for (var prop in projectData) {
         if (projectData.hasOwnProperty(prop)) {
@@ -70,11 +70,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
         },
 
 
-        hideSubmitButton: function(slide) {
-            if (!slide) slide = interfaceObj.getVariableValue('cpInfoCurrentSlideLabel');
-            var submitButton = submitButtonMap[slide];
-            cp.hide(submitButton);
-        },
+        
 
         tocContentWidth: function(tocButtonDom) {
 
