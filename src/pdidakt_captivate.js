@@ -122,7 +122,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
         },
 
 
-        findSlideNumberWithLabel: function(label) {
+        getSlideNumberWLabel: function(label) {
 
             var slideNumber;
             var getSlides = cp.model.data.project_main.slides.split(',');
