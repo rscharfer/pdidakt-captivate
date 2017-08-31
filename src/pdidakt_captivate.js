@@ -157,51 +157,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
         },
 
-        hidePlayShowPause: function(configPlay, configPause) {
-
-            //  playButton is a string representing the si id of the play button e.g. 'si61740';
-            //  pauseButton is a string representing the si id of the pause button e.g.  'si59879';
-
-
-
-            cp.show(configPause.si);
-            cp.hide(configPlay.si);
-
-        },
-
-        hidePauseShowPlay: function(configPlay, configPause) {
-
-            //  playButton is a string representing the si id of the play button e.g. 'si61740';
-            //  pauseButton is a string representing the si id of the pause button e.g.  'si59879';
-
-
-
-            cp.hide(configPause.si);
-            cp.show(configPlay.si);
-
-        },
-
-        
-
-        wireTogglePlayPause(tocConfigObject, playConfigObject, pauseConfigObject) {
+    
+        initialize(tocConfigObject, playConfigObject, pauseConfigObject) {
 
 
             let self = this;
 
-
-
-
-
-
-
             // call the play function and activate the buttons on every slide enter
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
-
                 setTimeout(() => {
-
-
-
 
                     const tocDom = self.getElementByIdOrLocation(tocConfigObject)
                     const playDom = self.getElementByIdOrLocation(playConfigObject)
@@ -209,26 +174,13 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     const collapseTocDom = self.getElementByIdOrLocation(self.collapseButton)
 
                     self.play(pauseConfigObject, playConfigObject);
-                    self.activateButtons(tocDom, playDom, pauseDom, collapseTocDom);
+                    self.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
                     self.tocContentWidth(tocDom);
 
 
                 }, 1000)
 
             });
-
-
-
-
-
-
-            // this.activateButtons(TOCButton, playButton, pauseButton);
-
-
-
-
-
-
 
         },
 
@@ -277,13 +229,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
             this.playing = false;
         },
 
-        activateButtons(tocDom, playDom, pauseDom, collapseTocDom) {
+        wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom) {
 
             const self = this;
-
-
-
-
 
             if (playDom && pauseDom && tocDom) {
                 // if there is a play, pause, and TOC button
@@ -367,7 +315,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     }
 
-    pd.wireTogglePlayPause(pd.tocButton, pd.playButton, pd.pauseButton);
+    pd.initialize(pd.tocButton, pd.playButton, pd.pauseButton);
 })
 
 
