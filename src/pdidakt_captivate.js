@@ -37,6 +37,8 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         tocButton: config.toc,
 
+        playing: true,
+
 
         // technically the collapse buttons doesnt have a si it its id..
 
@@ -179,7 +181,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         },
 
-        playing: true,
+        
 
         wireTogglePlayPause(tocConfigObject, playConfigObject, pauseConfigObject) {
 
@@ -355,16 +357,13 @@ window.addEventListener("moduleReadyEvent", function(e) {
             else if (top && left) return this.findDOMElementByLocation(top, left)
 
             else console.error(`A button with id ${id} and top value of ${top} and left value of ${left} was not found.`)
-        },
-
-
-
-
-
-        recordUserInteraction: function(scrollTextVariable) {
-            // from TLC Media Design
-            SCORM2004_RecordInteraction("Student Response", scrollTextVariable, true, 0, 0, 0, 0, 0, Date(), "SCORM2004_INTERACTION_TYPE_LONG_FILL_IN");
         }
+
+
+
+
+
+        
 
     }
 
