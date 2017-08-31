@@ -179,24 +179,6 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         },
 
-        addToggleToTOC: (tocButton) => {
-            // the click event listener checks to see if the toc is visible
-            // if so, close
-            // if not, open
-            eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', function(e) {
-
-                const button = document.getElementById(tocButton);
-                const toc = document.getElementById("toc");
-                console.log("slide entered", button, toc)
-                if (button && toc) button.addEventListener('click', () => {
-
-                    if (interfaceObj.getVariableValue('cpCmndTOCVisible')) toc.animator.hideTOC();
-                    else toc.animator.hideTOC();
-                })
-                else throw Error('The toggle button with this si number cannot be found.', button, toc)
-            })
-        },
-
         playing: true,
 
         wireTogglePlayPause(tocConfigObject, playConfigObject, pauseConfigObject) {
