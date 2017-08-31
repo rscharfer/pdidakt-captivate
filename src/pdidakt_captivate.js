@@ -60,7 +60,8 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         collapseButton: { si: 'collapseIcon' },
 
-        lookForSIs: (si) => {
+        siExits: (si) => {
+            // on slide enter, checks to see if a DOM element with an si id exists
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
                 const element = document.getElementById(si);
@@ -68,38 +69,62 @@ window.addEventListener("moduleReadyEvent", function(e) {
             })
         },
 
-        activateProgressBar: (nameOfBar, fullWidth) => {
-            // name of bar can be the name of the element on the first slide set to show for the rest of the project 
-            nameOfBar += 'c';
-            eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
-
-                let interval = setInterval(() => {
-                    checkForBar(nameOfBar)
-                }, 50, false);
-                const checkForBar = (nameOfBar) => {
-                    let shape;
-                    if (shape = document.getElementById(nameOfBar)) {
-                        enlargeBar(shape);
-                        clearInterval(interval);
-                        interval = null;
-                    }
-                }
-
-                function enlargeBar(shape) {
-                    let w = Math.round(fullWidth / (window.cpInfoSlideCount / window.cpInfoCurrentSlide));
-                    console.log(`The window width is ${window.totalWidth}, slide count is ${window.cpInfoSlideCount} and current slide ${window.cpInfoCurrentSlide}`);
-                    shape.style.width = w + "px";
-                }
-
-            })
-
-
-        },
 
         hideSubmitButton: function(slide) {
             if (!slide) slide = interfaceObj.getVariableValue('cpInfoCurrentSlideLabel');
             var submitButton = submitButtonMap[slide];
             cp.hide(submitButton);
+        },
+
+        tocContentWidth: function(tocButtonDom) {
+
+
+            // add click event listener to <div id="toc"></div>
+            var tocDivDom = document.querySelector("#toc");
+            tocDivDom.addEventListener("click", adjustCheckmarkMargins, false)
+            // add click eventlistener to the toc button
+            tocButtonDom.addEventListener("click", adjustCheckmarkMargins, false)
+
+
+            // get the toContent DOM element    
+            var tocContent = document.querySelector("#tocContent");
+
+            // gather all of the toc checkmarks into an array
+            var checkmarks = Array.from(tocContent.querySelectorAll('img')).filter(img=>/visited\.png/.exec(img.src));
+
+
+            function adjustCheckmarkMargins() {
+                console.log('this is called')
+                for (let checkmark of checkmarks) {
+                    checkmark.style.marginLeft = checkOverflow(tocContent) ? "455px" : "472px";
+                    checkmark.style.marginTop = "11.5px";
+                }
+
+            }
+
+
+
+
+
+            function checkOverflow(el) {
+                // get the current overflow style value of the element. it it's not set, it will be an empty string
+                // const curOverflow = el.style.overflow;
+                // console.log(`The original overflow value is ${curOverflow}`)
+
+                // // if there is no overflow set or overflow is set to visible, make it hidden
+                // if (!curOverflow || curOverflow === "visible")
+                //     el.style.overflow = "hidden";
+
+                // if the overflow is hidden 
+                var isOverflowing = el.clientWidth < el.scrollWidth || el.clientHeight < el.scrollHeight;
+
+                // give it back its original value because we dont want to change anything
+                // el.style.overflow = curOverflow;
+
+                return isOverflowing;
+            }
+
+
         },
 
         showSubmitButton: function(slide) {
@@ -277,6 +302,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                     self.play(pauseConfigObject, playConfigObject);
                     self.activateButtons(tocDom, playDom, pauseDom, collapseTocDom);
+                    self.tocContentWidth(tocDom);
 
 
                 }, 1000)
