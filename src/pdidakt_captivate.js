@@ -27,25 +27,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     interfaceObj = e.Data;
     eventEmitterObj = interfaceObj.getEventEmitter();
-    // ASSUMED:
-    // all drag and drop submit buttons on cp.model.data have a property "type" with value of 641
-    // the submit buttons of question slides and knowledge check slides have have a "qbt" property with value of "submit"
 
-    var DRAGANDDROPSUBMITTYPE = 641;
-   
-    var projectData = cp.model.data;
-    for (var prop in projectData) {
-        if (projectData.hasOwnProperty(prop)) {
-
-            if (projectData[prop].type === DRAGANDDROPSUBMITTYPE || projectData[prop].qbt === "submit") {
-                // encodedSlideLabel is how captivate identifies the slide on cp.model.data eg "slide7511768"
-                var encodedSlideLabel = projectData[prop].apsn;
-                var slideLabel = projectData[encodedSlideLabel].lb;
-                submitButtonMap[slideLabel] = prop;
-            }
-
-        }
-    }
 
     pd = {
 
@@ -84,7 +66,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             var tocContent = document.querySelector("#tocContent");
 
             // gather all of the toc checkmarks into an array
-            var checkmarks = Array.from(tocContent.querySelectorAll('img')).filter(img=>/visited\.png/.exec(img.src));
+            var checkmarks = Array.from(tocContent.querySelectorAll('img')).filter(img => /visited\.png/.exec(img.src));
 
 
             function adjustCheckmarkMargins() {
@@ -101,16 +83,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             function checkOverflow(el) {
-        
+
                 var isOverflowing = el.clientWidth < el.scrollWidth || el.clientHeight < el.scrollHeight;
 
-            
+
 
                 return isOverflowing;
             }
         },
 
-        
+
         getLabelWSlideNumber: function(slideNumber) {
 
             // slideNumber is zero-based, so slide 1 in project has a slideNumber of 0
@@ -139,6 +121,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
         jumpToPrevBookmark: function(bookmark) {
+            // in Captivate, add a bookmark such as #thisIsMyBookmark to a slide label
             var getSlides = cp.model.data.project_main.slides.split(',');
 
             var currentSlide = interfaceObj.getVariableValue('cpInfoCurrentSlide')
@@ -156,6 +139,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
         jumpToNextBookmark: function(bookmark) {
+            // in Captivate, add a bookmark such as #thisIsMyBookmark to a slide label
             var getSlides = cp.model.data.project_main.slides.split(',');
 
             var currentSlide = interfaceObj.getVariableValue('cpInfoCurrentSlide')
@@ -171,66 +155,29 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
         },
 
-        hidePlayShowPause: function(playButton, pauseButton) {
+        hidePlayShowPause: function(configPlay, configPause) {
 
             //  playButton is a string representing the si id of the play button e.g. 'si61740';
             //  pauseButton is a string representing the si id of the pause button e.g.  'si59879';
 
 
 
-            cp.show(pauseButton);
-            cp.hide(playButton);
-
-
+            cp.show(configPause.si);
+            cp.hide(configPlay.si);
 
         },
 
-        // 
-        showCorrectImageOnPlayPauseChange(playButton, pauseButton) {
-            eventEmitterObj.addEventListener('CPAPI_MOVIERESUME', () => {
+        hidePauseShowPlay: function(configPlay, configPause) {
 
-                cp.show(pauseButton);
-                cp.hide(playButton);
+            //  playButton is a string representing the si id of the play button e.g. 'si61740';
+            //  pauseButton is a string representing the si id of the pause button e.g.  'si59879';
 
 
 
-            })
+            cp.hide(configPause.si);
+            cp.show(configPlay.si);
 
-            eventEmitterObj.addEventListener('CPAPI_MOVIESTART', () => {
-
-                cp.show(pauseButton);
-                cp.hide(playButton);
-
-
-
-            })
-
-            eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', () =>
-
-                {
-                    cp.hide(pauseButton);
-                    cp.show(playButton);
-
-                })
         },
-
-        togglePlayPause: (() => {
-            let isPlaying = 1;
-            return () => {
-                if (isPlaying) {
-                    isPlaying = 0;
-                    interfaceObj.pause();
-
-                } else {
-                    isPlaying = 1;
-                    interfaceObj.play();
-
-                }
-            }
-
-        })(),
-
-
 
         addToggleToTOC: (tocButton) => {
             // the click event listener checks to see if the toc is visible
