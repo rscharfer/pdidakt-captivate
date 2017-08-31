@@ -70,8 +70,6 @@ window.addEventListener("moduleReadyEvent", function(e) {
         },
 
 
-        
-
         tocContentWidth: function(tocButtonDom) {
 
 
@@ -103,33 +101,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             function checkOverflow(el) {
-                // get the current overflow style value of the element. it it's not set, it will be an empty string
-                // const curOverflow = el.style.overflow;
-                // console.log(`The original overflow value is ${curOverflow}`)
-
-                // // if there is no overflow set or overflow is set to visible, make it hidden
-                // if (!curOverflow || curOverflow === "visible")
-                //     el.style.overflow = "hidden";
-
-                // if the overflow is hidden 
+        
                 var isOverflowing = el.clientWidth < el.scrollWidth || el.clientHeight < el.scrollHeight;
 
-                // give it back its original value because we dont want to change anything
-                // el.style.overflow = curOverflow;
+            
 
                 return isOverflowing;
             }
-
-
         },
 
-        showSubmitButton: function(slide) {
-            if (!slide) slide = interfaceObj.getVariableValue('cpInfoCurrentSlideLabel');
-            var submitButton = submitButtonMap[slide];
-            cp.show(submitButton);
-        },
-
-
+        
         getLabelWSlideNumber: function(slideNumber) {
 
             // slideNumber is zero-based, so slide 1 in project has a slideNumber of 0
