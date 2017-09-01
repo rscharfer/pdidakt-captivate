@@ -5,13 +5,15 @@
   "main": "pdidakt_captivate.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "bundle": "webpack",
+    "buildandbundle":"npm run build && npm run bundle"
   },
   "author": "Ryan Scharfer",
   "license": "ISC",
   "devDependencies": {
     "babel": "^6.23.0",
-    "babel-cli": "^6.24.1",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-runtime": "^6.23.0",

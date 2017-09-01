@@ -1,19 +1,19 @@
-var interfaceObj, eventEmitterObj, pd, config = {};
+window.interfaceObj, window.eventEmitterObj, window.pd, window.config = {};
 
 
-function configPlay(si, top, left) {
+window.configPlay=function(si, top, left) {
 
     config.play = { si, top, left };
 }
 
 
-function configPause(si, top, left) {
+window.configPause=function(si, top, left) {
 
     config.pause = { si, top, left };
 }
 
 
-function configToc(si, top, left) {
+window.configToc=function(si, top, left) {
 
     config.toc = { si, top, left };
 }
@@ -25,11 +25,11 @@ function configToc(si, top, left) {
 
 window.addEventListener("moduleReadyEvent", function(e) {
 
-    interfaceObj = e.Data;
-    eventEmitterObj = interfaceObj.getEventEmitter();
+    window.interfaceObj = e.Data;
+    window.eventEmitterObj = interfaceObj.getEventEmitter();
 
 
-    pd = {
+    window.pd = {
 
         playButton: config.play,
 
