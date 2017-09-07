@@ -94,6 +94,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
         },
 
+        enlargeCollapseButton:function(collapseTocDom){
+
+            collapseTocDom.style.height = "31px";
+            collapseTocDom.style.width = "31px";
+        }
+
 
         getLabelWSlideNumber: function(slideNumber) {
 
@@ -176,6 +182,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     self.play(pauseConfigObject, playConfigObject);
                     self.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
                     self.tocContentWidth(tocDom);
+                    self.enlargeCollapseButton(collapseTocDom);
 
 
                 }, 1000)
