@@ -98,7 +98,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             collapseTocDom.style.height = "31px";
             collapseTocDom.style.width = "31px";
-        }
+        },
+
+        hideTOCSlideTitleHeading(){
+            const slideTitleText = document.querySelector('.tocSlideTitleHeading')[0];
+            slideTitleText.style.display="none";
+        },
 
 
         getLabelWSlideNumber: function(slideNumber) {
@@ -183,6 +188,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     self.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
                     self.tocContentWidth(tocDom);
                     self.enlargeCollapseButton(collapseTocDom);
+                    self.hideTOCSlideTitleHeading();
 
 
                 }, 1000)
