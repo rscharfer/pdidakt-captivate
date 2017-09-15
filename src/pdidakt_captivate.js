@@ -96,7 +96,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         enlargeCollapseButton: function(collapseTocDom) {
 
-            collapseTocDom.style.height = "31px";
+                        collapseTocDom.style.height = "31px";
             collapseTocDom.style.width = "31px";
         },
 

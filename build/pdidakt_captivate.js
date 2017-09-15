@@ -111,6 +111,7 @@ window.addEventListener("moduleReadyEvent", function (e) {
 
                         enlargeCollapseButton: function enlargeCollapseButton(collapseTocDom) {
 
+                                    console.log(collapseTocDom);
                                     collapseTocDom.style.height = "31px";
                                     collapseTocDom.style.width = "31px";
                         },
@@ -201,13 +202,6 @@ window.addEventListener("moduleReadyEvent", function (e) {
                         },
                         play: function play(pause_si, play_si) {
 
-                                    try {
-                                                throw Error('label is:' + window.cpInfoCurrentSlideLabel + ' ');
-                                    } catch (e) {
-                                                Raven.captureException(e);
-                                                console.log(e);
-                                    }
-
                                     // if the TOC is visible, close it
                                     if (window.cpCmndTOCVisible) {
 
@@ -222,13 +216,6 @@ window.addEventListener("moduleReadyEvent", function (e) {
 
                                     var playVisibilityValue = document.querySelector('#' + play_si + 'c').style.visibility;
 
-                                    try {
-                                                throw Error('play button has a visibility value of ' + playVisibilityValue);
-                                    } catch (e) {
-                                                Raven.captureException(e);
-                                                console.log(e);
-                                    }
-
                                     // play the project again
                                     window.cpCmndResume = 1;
 
@@ -238,34 +225,16 @@ window.addEventListener("moduleReadyEvent", function (e) {
                                                 cp.hide(play_si);
                                                 cp.show(pause_si);
                                                 window.cpCmndResume = 1;
-                                                try {
-                                                            throw Error('play button has a visibility value of ' + playVisibilityValue);
-                                                } catch (e) {
-                                                            Raven.captureException(e);
-                                                            console.log(e);
-                                                }
                                     }, 100);
                         },
                         pause: function pause(pause_si, play_si) {
 
-                                    try {
-                                                throw Error('label is:' + window.cpInfoCurrentSlideLabel + ' ');
-                                    } catch (e) {
-                                                Raven.captureException(e);
-                                                console.log(e);
-                                    }
                                     // hide pause button, show play, playing is false and project is paused
                                     window.cpCmndPause = 1;
                                     cp.hide(pause_si);
                                     cp.show(play_si);
                                     var pauseVisibilityValue = document.querySelector('#' + pause_si + 'c').style.visibility;
 
-                                    try {
-                                                throw Error('play button has a visibility value of ' + playVisibilityValue);
-                                    } catch (e) {
-                                                Raven.captureException(e);
-                                                console.log(e);
-                                    }
                                     this.playing = false;
                         },
                         wirePlayPauseTocCollapseButtons: function wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom) {
