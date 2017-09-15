@@ -72,7 +72,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             function adjustCheckmarkMargins() {
-                console.log('this is called')
+            
                 for (let checkmark of checkmarks) {
                     checkmark.style.marginLeft = checkOverflow(tocContent) ? "455px" : "472px";
                     checkmark.style.marginTop = "11.5px";
