@@ -42,6 +42,8 @@ window.addEventListener("moduleReadyEvent", function (e) {
 
                         playing: true,
 
+                        wasPaused: null,
+
                         // technically the collapse buttons doesnt have a si it its id..
 
                         collapseButton: { si: 'collapseIcon' },
@@ -209,6 +211,7 @@ window.addEventListener("moduleReadyEvent", function (e) {
 
                                     // reset playing to true
                                     this.playing = true;
+                                    console.log('this.playing is ' + this.playing);
                                     // hide play button, show pause button
                                     cp.hide(play_si);
                                     cp.show(pause_si);
@@ -239,6 +242,7 @@ window.addEventListener("moduleReadyEvent", function (e) {
                         wirePlayPauseTocCollapseButtons: function wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom) {
 
                                     var self = this;
+                                    console.log('self.playing is ' + self.playing);
 
                                     if (!tocDom) throw Error('toc button not found');
                                     if (!playDom) throw Error('play button not found');
@@ -252,6 +256,9 @@ window.addEventListener("moduleReadyEvent", function (e) {
                                                             // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
                                                             if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?");
                                                             if (!window.cpCmndTOCVisible) {
+                                                                        console.log('self is', self);
+                                                                        self.playing ? self.wasPaused = false : self.wasPaused = true;
+                                                                        console.log('self is now', self);
                                                                         self.pause(self.pauseButton.si, self.playButton.si);
                                                                         window.cpCmndTOCVisible = true;
 
@@ -263,7 +270,8 @@ window.addEventListener("moduleReadyEvent", function (e) {
 
                                                 // add correct event listeners to play and pause button
                                                 if (collapseTocDom) collapseTocDom.addEventListener('click', function () {
-                                                            return self.play(self.pauseButton.si, self.playButton.si);
+
+                                                            self.wasPaused ? window.cpCmndTOCVisible = false : self.play(self.pauseButton.si, self.playButton.si);
                                                 }, false);
                                                 playDom.addEventListener('click', function () {
                                                             return self.play(self.pauseButton.si, self.playButton.si);
