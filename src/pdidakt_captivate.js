@@ -216,7 +216,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             // reset playing to true
             this.playing = true;
-            console.log(`this.playing is ${this.playing}`);
+         
             // hide play button, show pause button
             cp.hide(play_si);
             cp.show(pause_si);
@@ -279,6 +279,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     if (!window.cpCmndTOCVisible) {
                         
                         self.playing ? self.wasPaused = false : self.wasPaused = true;
+                       
                         
                         self.pause(self.pauseButton.si, self.playButton.si)
 
@@ -293,7 +294,16 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 // add correct event listeners to play and pause button
                 if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
 
-                 self.wasPaused? window.cpCmndTOCVisible = false : self.play(self.pauseButton.si, self.playButton.si);   
+                 if(self.wasPaused){
+                  
+                    window.cpCmndTOCVisible = false;
+                
+                 } 
+                 else{
+     
+                    self.play(self.pauseButton.si, self.playButton.si);
+                   
+                 }  
                 }, false);
                 playDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si), false);
                 pauseDom.addEventListener('click', () => self.pause(self.pauseButton.si, self.playButton.si), false);
