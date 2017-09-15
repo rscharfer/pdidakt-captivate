@@ -262,7 +262,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
         wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom) {
 
             const self = this;
-            console.log(`self.playing is ${self.playing}`);
+
 
             if (!tocDom) throw Error('toc button not found')
             if (!playDom) throw Error('play button not found')
@@ -277,18 +277,17 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
                     if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?")
                     if (!window.cpCmndTOCVisible) {
-                        console.log('self is', self);
+                        
                         self.playing ? self.wasPaused = false : self.wasPaused = true;
-                        console.log('self is now', self);
+                        
                         self.pause(self.pauseButton.si, self.playButton.si)
+
                         window.cpCmndTOCVisible = true;
 
-                        // it toc button is hwoing, play button when clicked
-                    } else {
-                        self.play(self.pauseButton.si, self.playButton.si)
+                        // it toc button is showing, play button when clicked, change in future to check to see if it was paused?
+                    } else self.play(self.pauseButton.si, self.playButton.si)
 
-
-                    }
+            
                 });
 
                 // add correct event listeners to play and pause button
