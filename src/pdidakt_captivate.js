@@ -1,19 +1,19 @@
 window.interfaceObj, window.eventEmitterObj, window.pd, window.config = {};
 
 
-window.configPlay=function(si, top, left) {
+window.configPlay = function(si, top, left) {
 
     config.play = { si, top, left };
 }
 
 
-window.configPause=function(si, top, left) {
+window.configPause = function(si, top, left) {
 
     config.pause = { si, top, left };
 }
 
 
-window.configToc=function(si, top, left) {
+window.configToc = function(si, top, left) {
 
     config.toc = { si, top, left };
 }
@@ -94,15 +94,15 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
         },
 
-        enlargeCollapseButton:function(collapseTocDom){
+        enlargeCollapseButton: function(collapseTocDom) {
 
             collapseTocDom.style.height = "31px";
             collapseTocDom.style.width = "31px";
         },
 
-        hideTOCSlideTitleHeading(){
-            const slideTitleText = document.querySelector('.tocSlideTitleHeading')[0];
-            slideTitleText.style.display="none";
+        hideTOCSlideTitleHeading() {
+            const slideTitleText = document.querySelector('.tocSlideTitleHeading');
+            slideTitleText.style.display = "none";
         },
 
 
@@ -168,7 +168,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
         },
 
-    
+
         initialize(tocConfigObject, playConfigObject, pauseConfigObject) {
 
 
@@ -176,6 +176,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             // call the play function and activate the buttons on every slide enter
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
+               
 
                 setTimeout(() => {
 
@@ -184,11 +185,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     const pauseDom = self.getElementByIdOrLocation(pauseConfigObject)
                     const collapseTocDom = self.getElementByIdOrLocation(self.collapseButton)
 
-                    self.play(pauseConfigObject, playConfigObject);
+                    self.play(pauseConfigObject.si, playConfigObject.si);
                     self.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
                     self.tocContentWidth(tocDom);
                     self.enlargeCollapseButton(collapseTocDom);
                     self.hideTOCSlideTitleHeading();
+
 
 
                 }, 1000)
@@ -199,7 +201,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         play(pause_si, play_si) {
 
+            
 
+           
 
             // if the TOC is visible, close it
             if (window.cpCmndTOCVisible) {
@@ -213,9 +217,15 @@ window.addEventListener("moduleReadyEvent", function(e) {
             // hide play button, show pause button
             cp.hide(play_si);
             cp.show(pause_si);
+    
+            const playVisibilityValue = document.querySelector('#'+play_si+'c').style.visibility;
+            
+           
 
             // play the project again
             window.cpCmndResume = 1;
+
+            
 
 
             // after a tenth of a second hide play, show pause and play the project again
@@ -225,7 +235,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 cp.hide(play_si);
                 cp.show(pause_si);
                 window.cpCmndResume = 1;
-
+        
 
 
 
@@ -235,10 +245,14 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         pause(pause_si, play_si) {
 
+           
             // hide pause button, show play, playing is false and project is paused
             window.cpCmndPause = 1;
             cp.hide(pause_si);
             cp.show(play_si);
+            const pauseVisibilityValue = document.querySelector('#'+pause_si+'c').style.visibility;
+
+           
             this.playing = false;
         },
 
@@ -246,12 +260,18 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             const self = this;
 
+            if (!tocDom) throw Error('toc button not found')
+            if (!playDom) throw Error('play button not found')
+            if (!pauseDom) throw Error('pause button not found')
+
             if (playDom && pauseDom && tocDom) {
+
+
                 // if there is a play, pause, and TOC button
 
                 tocDom.addEventListener('click', function() {
                     // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
-
+                    if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?")
                     if (!window.cpCmndTOCVisible) {
                         self.pause(self.pauseButton.si, self.playButton.si)
                         window.cpCmndTOCVisible = true;
@@ -273,6 +293,8 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             }
+
+
 
 
 
@@ -324,7 +346,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
 
-        
+
 
     }
 
