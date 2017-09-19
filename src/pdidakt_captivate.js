@@ -276,7 +276,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 tocDom.addEventListener('click', function() {
                     // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
                     if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?")
-                    if (!window.cpCmndTOCVisible) {
+                    // if (!window.cpCmndTOCVisible) {
                         
                         self.playing ? self.wasPaused = false : self.wasPaused = true;
                        
@@ -286,7 +286,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                         window.cpCmndTOCVisible = true;
 
                         // it toc button is showing, play button when clicked, change in future to check to see if it was paused?
-                    } else self.play(self.pauseButton.si, self.playButton.si)
+                    // } else self.play(self.pauseButton.si, self.playButton.si)
 
             
                 });

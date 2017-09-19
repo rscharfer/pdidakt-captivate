@@ -254,16 +254,17 @@ window.addEventListener("moduleReadyEvent", function (e) {
                                                 tocDom.addEventListener('click', function () {
                                                             // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
                                                             if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?");
-                                                            if (!window.cpCmndTOCVisible) {
+                                                            // if (!window.cpCmndTOCVisible) {
 
-                                                                        self.playing ? self.wasPaused = false : self.wasPaused = true;
+                                                            self.playing ? self.wasPaused = false : self.wasPaused = true;
 
-                                                                        self.pause(self.pauseButton.si, self.playButton.si);
+                                                            self.pause(self.pauseButton.si, self.playButton.si);
 
-                                                                        window.cpCmndTOCVisible = true;
+                                                            window.cpCmndTOCVisible = true;
 
-                                                                        // it toc button is showing, play button when clicked, change in future to check to see if it was paused?
-                                                            } else self.play(self.pauseButton.si, self.playButton.si);
+                                                            // it toc button is showing, play button when clicked, change in future to check to see if it was paused?
+                                                            // } else self.play(self.pauseButton.si, self.playButton.si)
+
                                                 });
 
                                                 // add correct event listeners to play and pause button
