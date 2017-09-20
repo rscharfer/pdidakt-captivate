@@ -32,6 +32,11 @@ window.addEventListener("moduleReadyEvent", function (e) {
             window.interfaceObj = e.Data;
             window.eventEmitterObj = interfaceObj.getEventEmitter();
 
+            eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', function () {
+
+                        window.pd.playing = false;
+            });
+
             window.pd = {
 
                         playButton: config.play,

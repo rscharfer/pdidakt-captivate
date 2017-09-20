@@ -28,6 +28,11 @@ window.addEventListener("moduleReadyEvent", function(e) {
     window.interfaceObj = e.Data;
     window.eventEmitterObj = interfaceObj.getEventEmitter();
 
+    eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', () => {
+
+        window.pd.playing = false;
+    })
+
 
     window.pd = {
 
@@ -74,7 +79,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             function adjustCheckmarkMargins() {
-            
+
                 for (let checkmark of checkmarks) {
                     checkmark.style.marginLeft = checkOverflow(tocContent) ? "455px" : "472px";
                     checkmark.style.marginTop = "11.5px";
@@ -98,7 +103,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         enlargeCollapseButton: function(collapseTocDom) {
 
-                        collapseTocDom.style.height = "31px";
+            collapseTocDom.style.height = "31px";
             collapseTocDom.style.width = "31px";
         },
 
@@ -178,7 +183,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             // call the play function and activate the buttons on every slide enter
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
-               
+
 
                 setTimeout(() => {
 
@@ -203,9 +208,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         play(pause_si, play_si) {
 
-            
 
-           
+
+
 
             // if the TOC is visible, close it
             if (window.cpCmndTOCVisible) {
@@ -216,19 +221,19 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             // reset playing to true
             this.playing = true;
-         
+
             // hide play button, show pause button
             cp.hide(play_si);
             cp.show(pause_si);
-    
-            const playVisibilityValue = document.querySelector('#'+play_si+'c').style.visibility;
-            
-           
+
+            const playVisibilityValue = document.querySelector('#' + play_si + 'c').style.visibility;
+
+
 
             // play the project again
             window.cpCmndResume = 1;
 
-            
+
 
 
             // after a tenth of a second hide play, show pause and play the project again
@@ -238,7 +243,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 cp.hide(play_si);
                 cp.show(pause_si);
                 window.cpCmndResume = 1;
-        
+
 
 
 
@@ -248,14 +253,14 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         pause(pause_si, play_si) {
 
-           
+
             // hide pause button, show play, playing is false and project is paused
             window.cpCmndPause = 1;
             cp.hide(pause_si);
             cp.show(play_si);
-            const pauseVisibilityValue = document.querySelector('#'+pause_si+'c').style.visibility;
+            const pauseVisibilityValue = document.querySelector('#' + pause_si + 'c').style.visibility;
 
-           
+
             this.playing = false;
         },
 
@@ -277,33 +282,32 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
                     if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?")
                     // if (!window.cpCmndTOCVisible) {
-                        
-                        self.playing ? self.wasPaused = false : self.wasPaused = true;
-                       
-                        
-                        self.pause(self.pauseButton.si, self.playButton.si)
 
-                        window.cpCmndTOCVisible = true;
+                    self.playing ? self.wasPaused = false : self.wasPaused = true;
 
-                        // it toc button is showing, play button when clicked, change in future to check to see if it was paused?
+
+                    self.pause(self.pauseButton.si, self.playButton.si)
+
+                    window.cpCmndTOCVisible = true;
+
+                    // it toc button is showing, play button when clicked, change in future to check to see if it was paused?
                     // } else self.play(self.pauseButton.si, self.playButton.si)
 
-            
+
                 });
 
                 // add correct event listeners to play and pause button
                 if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
 
-                 if(self.wasPaused){
-                  
-                    window.cpCmndTOCVisible = false;
-                
-                 } 
-                 else{
-     
-                    self.play(self.pauseButton.si, self.playButton.si);
-                   
-                 }  
+                    if (self.wasPaused) {
+
+                        window.cpCmndTOCVisible = false;
+
+                    } else {
+
+                        self.play(self.pauseButton.si, self.playButton.si);
+
+                    }
                 }, false);
                 playDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si), false);
                 pauseDom.addEventListener('click', () => self.pause(self.pauseButton.si, self.playButton.si), false);
