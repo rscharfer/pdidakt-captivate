@@ -27,6 +27,34 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     window.interfaceObj = e.Data;
     window.eventEmitterObj = interfaceObj.getEventEmitter();
+    const collapseTocDom = document.querySelector('#collapseIcon')
+
+    if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
+                   debugger;
+                    if (pd.wasPaused) {
+                       
+                        if(pd.pausedByUser){
+                        
+                            cp.hide(pd.pauseButton.si);
+                            cp.show(pd.playButton.si);
+                        }
+                        else{
+                       
+                            cp.show(pd.pauseButton.si);
+                            cp.hide(pd.playButton.si);
+                        }
+
+                        window.cpCmndTOCVisible = false;
+                        
+
+                    } else {
+                        
+                        pd.play(pd.pauseButton.si, pd.playButton.si);
+
+                    }
+                    pd.pausedByUser =false;
+                    
+                }, false);
 
     eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', () => {
 
@@ -45,6 +73,8 @@ window.addEventListener("moduleReadyEvent", function(e) {
         playing: true,
 
         wasPaused: null,
+
+        pausedByUser: false,
 
 
         // technically the collapse buttons doesnt have a si it its id..
@@ -210,7 +240,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
 
-
+            pd.pausedByUser = false;
 
             // if the TOC is visible, close it
             if (window.cpCmndTOCVisible) {
@@ -259,9 +289,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             cp.hide(pause_si);
             cp.show(play_si);
             const pauseVisibilityValue = document.querySelector('#' + pause_si + 'c').style.visibility;
-
-
-            this.playing = false;
+            this.pausedByUser = true;
         },
 
         wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom) {
@@ -279,6 +307,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 // if there is a play, pause, and TOC button
 
                 tocDom.addEventListener('click', function() {
+                	
                     // add a click listener to the toc button .. if toc is is hidden, pause project and show toc when button is clicked
                     if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?")
                     // if (!window.cpCmndTOCVisible) {
@@ -286,7 +315,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     self.playing ? self.wasPaused = false : self.wasPaused = true;
 
 
-                    self.pause(self.pauseButton.si, self.playButton.si)
+                    if(self.playing) self.pause(self.pauseButton.si, self.playButton.si)
 
                     window.cpCmndTOCVisible = true;
 
@@ -297,18 +326,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 });
 
                 // add correct event listeners to play and pause button
-                if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
-
-                    if (self.wasPaused) {
-
-                        window.cpCmndTOCVisible = false;
-
-                    } else {
-
-                        self.play(self.pauseButton.si, self.playButton.si);
-
-                    }
-                }, false);
+                
                 playDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si), false);
                 pauseDom.addEventListener('click', () => self.pause(self.pauseButton.si, self.playButton.si), false);
 
