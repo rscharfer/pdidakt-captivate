@@ -1,6 +1,11 @@
-window.interfaceObj, window.eventEmitterObj, window.pd, window.config = {};
+window.config = {};
 
 
+// collapseIcon is not really a si id, but normal id
+config.collapse = {si:'collapseIcon'}
+
+
+// these three funcions are called by the user after the file
 window.configPlay = function(si, top, left) {
 
     config.play = { si, top, left };
@@ -21,7 +26,7 @@ window.configToc = function(si, top, left) {
 
 
 
-
+// all global varaibles should be prefixed with window
 
 window.addEventListener("moduleReadyEvent", function(e) {
 
@@ -30,18 +35,18 @@ window.addEventListener("moduleReadyEvent", function(e) {
     const collapseTocDom = document.querySelector('#collapseIcon')
 
     if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
-                   debugger;
+                   
                     if (pd.wasPaused) {
                        
                         if(pd.pausedByUser){
                         
-                            cp.hide(pd.pauseButton.si);
-                            cp.show(pd.playButton.si);
+                            cp.hide(window.config.pause.si);
+                            cp.show(window.config.play.si);
                         }
                         else{
                        
-                            cp.show(pd.pauseButton.si);
-                            cp.hide(pd.playButton.si);
+                            cp.show(window.config.pause.si);
+                            cp.hide(window.config.play.si);
                         }
 
                         window.cpCmndTOCVisible = false;
@@ -49,7 +54,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                     } else {
                         
-                        pd.play(pd.pauseButton.si, pd.playButton.si);
+                        pd.play(window.config.pause.si, window.config.play.si);
 
                     }
                     pd.pausedByUser =false;
@@ -64,11 +69,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     window.pd = {
 
-        playButton: config.play,
+        
 
-        pauseButton: config.pause,
+       
 
-        tocButton: config.toc,
+       
+
 
         playing: true,
 
@@ -77,12 +83,11 @@ window.addEventListener("moduleReadyEvent", function(e) {
         pausedByUser: false,
 
 
-        // technically the collapse buttons doesnt have a si it its id..
 
-        collapseButton: { si: 'collapseIcon' },
+        
 
-        siExits: (si) => {
-            // on slide enter, checks to see if a DOM element with an si id exists
+        siElementExists: (si) => {
+            
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
                 const element = document.getElementById(si);
@@ -206,7 +211,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
         },
 
 
-        initialize(tocConfigObject, playConfigObject, pauseConfigObject) {
+        initialize() {
 
 
             let self = this;
@@ -217,12 +222,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 setTimeout(() => {
 
-                    const tocDom = self.getElementByIdOrLocation(tocConfigObject)
-                    const playDom = self.getElementByIdOrLocation(playConfigObject)
-                    const pauseDom = self.getElementByIdOrLocation(pauseConfigObject)
-                    const collapseTocDom = self.getElementByIdOrLocation(self.collapseButton)
+                    const tocDom = self.getElementByIdOrLocation(window.config.toc)
+                    const playDom = self.getElementByIdOrLocation(window.config.play)
+                    const pauseDom = self.getElementByIdOrLocation(window.config.pause)
+                    const collapseTocDom = self.getElementByIdOrLocation(window.config.collapse)
 
-                    self.play(pauseConfigObject.si, playConfigObject.si);
+                    self.play(window.config.pause.si, window.config.play.si);
                     self.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
                     self.tocContentWidth(tocDom);
                     self.enlargeCollapseButton(collapseTocDom);
@@ -315,7 +320,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     self.playing ? self.wasPaused = false : self.wasPaused = true;
 
 
-                    if(self.playing) self.pause(self.pauseButton.si, self.playButton.si)
+                    if(self.playing) self.pause(window.config.pause.si, window.config.play.si)
 
                     window.cpCmndTOCVisible = true;
 
@@ -327,8 +332,8 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 // add correct event listeners to play and pause button
                 
-                playDom.addEventListener('click', () => self.play(self.pauseButton.si, self.playButton.si), false);
-                pauseDom.addEventListener('click', () => self.pause(self.pauseButton.si, self.playButton.si), false);
+                playDom.addEventListener('click', () => self.play(window.config.pause.si, window.config.play.si), false);
+                pauseDom.addEventListener('click', () => self.pause(window.config.pause.si, window.config.play.si), false);
 
 
 
@@ -391,7 +396,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
     }
 
-    pd.initialize(pd.tocButton, pd.playButton, pd.pauseButton);
+    pd.initialize();
 })
 
 
