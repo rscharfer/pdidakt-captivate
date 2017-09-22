@@ -1,27 +1,28 @@
-window.config = {};
+window.pd = {};
 
 
 // collapseIcon is not really a si id, but normal id
-config.collapse = {si:'collapseIcon'}
+pd.collapseButton = {si:'collapseIcon'}
 
 
 // these three funcions are called by the user after the file
 window.configPlay = function(si, top, left) {
 
-    config.play = { si, top, left };
+    pd.playButton = { si, top, left };
 }
 
 
 window.configPause = function(si, top, left) {
 
-    config.pause = { si, top, left };
+    pd.pauseButton = { si, top, left };
 }
 
 
 window.configToc = function(si, top, left) {
 
-    config.toc = { si, top, left };
+    pd.tocButton = { si, top, left };
 }
+
 
 
 
@@ -35,18 +36,18 @@ window.addEventListener("moduleReadyEvent", function(e) {
     const collapseTocDom = document.querySelector('#collapseIcon')
 
     if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
-                   
+                   debugger;
                     if (pd.wasPaused) {
                        
                         if(pd.pausedByUser){
                         
-                            cp.hide(window.config.pause.si);
-                            cp.show(window.config.play.si);
+                            cp.hide(pd.pauseButton.si);
+                            cp.show(pd.playButton.si);
                         }
                         else{
                        
-                            cp.show(window.config.pause.si);
-                            cp.hide(window.config.play.si);
+                            cp.show(pd.pauseButton.si);
+                            cp.hide(pd.playButton.si);
                         }
 
                         window.cpCmndTOCVisible = false;
@@ -54,10 +55,10 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                     } else {
                         
-                        pd.play(window.config.pause.si, window.config.play.si);
+                        pd.play(pd.pauseButton.si, pd.playButton.si);
 
                     }
-                    pd.pausedByUser =false;
+               
                     
                 }, false);
 
@@ -67,7 +68,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
     })
 
 
-    window.pd = {
+   
 
         
 
@@ -76,27 +77,27 @@ window.addEventListener("moduleReadyEvent", function(e) {
        
 
 
-        playing: true,
+        pd.playing =  true,
 
-        wasPaused: null,
+        pd.wasPaused = null,
 
-        pausedByUser: false,
+        pd.pausedByUser =  false,
 
 
 
         
 
-        siElementExists: (si) => {
+        pd.siElementExists = (si) => {
             
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
                 const element = document.getElementById(si);
                 return element ? true : false;
             })
-        },
+        }
 
 
-        tocContentWidth: function(tocButtonDom) {
+        pd.tocContentWidth =  (tocButtonDom) => {
 
 
             // add click event listener to <div id="toc"></div>
@@ -134,21 +135,21 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 return isOverflowing;
             }
-        },
+        }
 
-        enlargeCollapseButton: function(collapseTocDom) {
+        pd.enlargeCollapseButton = (collapseTocDom) => {
 
             collapseTocDom.style.height = "31px";
             collapseTocDom.style.width = "31px";
-        },
+        }
 
-        hideTOCSlideTitleHeading() {
+        pd.hideTOCSlideTitleHeading = ()=> {
             const slideTitleText = document.querySelector('.tocSlideTitleHeading');
             slideTitleText.style.display = "none";
-        },
+        }
 
 
-        getLabelWSlideNumber: function(slideNumber) {
+        pd.getLabelWSlideNumber = (slideNumber)=> {
 
             // slideNumber is zero-based, so slide 1 in project has a slideNumber of 0
 
@@ -156,10 +157,10 @@ window.addEventListener("moduleReadyEvent", function(e) {
             var label = cp.model.data[getSlides[slideNumber]].lb;
 
             return label
-        },
+        }
 
 
-        getSlideNumberWLabel: function(label) {
+        pd.getSlideNumberWLabel = (label) => {
 
             var slideNumber;
             var getSlides = cp.model.data.project_main.slides.split(',');
@@ -172,10 +173,10 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             return slideNumber
 
-        },
+        }
 
 
-        jumpToPrevBookmark: function(bookmark) {
+        pd.jumpToPrevBookmark = (bookmark) => {
             // in Captivate, add a bookmark such as #thisIsMyBookmark to a slide label
             var getSlides = cp.model.data.project_main.slides.split(',');
 
@@ -190,10 +191,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     break;
                 }
             }
-        },
+        }
 
-
-        jumpToNextBookmark: function(bookmark) {
+        pd.jumpToNextBookmark = (bookmark)=> {
             // in Captivate, add a bookmark such as #thisIsMyBookmark to a slide label
             var getSlides = cp.model.data.project_main.slides.split(',');
 
@@ -208,13 +208,13 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     break;
                 }
             }
-        },
+        }
 
 
-        initialize() {
+        pd.initialize = () => {
 
 
-            let self = this;
+            
 
             // call the play function and activate the buttons on every slide enter
             eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
@@ -222,16 +222,18 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 setTimeout(() => {
 
-                    const tocDom = self.getElementByIdOrLocation(window.config.toc)
-                    const playDom = self.getElementByIdOrLocation(window.config.play)
-                    const pauseDom = self.getElementByIdOrLocation(window.config.pause)
-                    const collapseTocDom = self.getElementByIdOrLocation(window.config.collapse)
+                	
 
-                    self.play(window.config.pause.si, window.config.play.si);
-                    self.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
-                    self.tocContentWidth(tocDom);
-                    self.enlargeCollapseButton(collapseTocDom);
-                    self.hideTOCSlideTitleHeading();
+                    const tocDom = pd.getElementByIdOrLocation(pd.tocButton)
+                    const playDom = pd.getElementByIdOrLocation(pd.playButton)
+                    const pauseDom = pd.getElementByIdOrLocation(pd.pauseButton)
+                    const collapseTocDom = pd.getElementByIdOrLocation(pd.collapseButton)
+
+                    pd.play(pd.pauseButton.si, pd.playButton.si);
+                    pd.wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom);
+                    pd.tocContentWidth(tocDom);
+                    pd.enlargeCollapseButton(collapseTocDom);
+                    pd.hideTOCSlideTitleHeading();
 
 
 
@@ -239,9 +241,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             });
 
-        },
+        }
 
-        play(pause_si, play_si) {
+        pd.play = (pause_si, play_si) => {
 
 
 
@@ -255,7 +257,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
 
             // reset playing to true
-            this.playing = true;
+            pd.playing = true;
 
             // hide play button, show pause button
             cp.hide(play_si);
@@ -284,9 +286,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             }, 100)
-        },
+        }
 
-        pause(pause_si, play_si) {
+        pd.pause = (pause_si, play_si) => {
 
 
             // hide pause button, show play, playing is false and project is paused
@@ -294,12 +296,12 @@ window.addEventListener("moduleReadyEvent", function(e) {
             cp.hide(pause_si);
             cp.show(play_si);
             const pauseVisibilityValue = document.querySelector('#' + pause_si + 'c').style.visibility;
-            this.pausedByUser = true;
-        },
+            pd.pausedByUser = true;
+        }
 
-        wirePlayPauseTocCollapseButtons(tocDom, playDom, pauseDom, collapseTocDom) {
+        pd.wirePlayPauseTocCollapseButtons = (tocDom, playDom, pauseDom, collapseTocDom) =>{
 
-            const self = this;
+            
 
 
             if (!tocDom) throw Error('toc button not found')
@@ -317,10 +319,11 @@ window.addEventListener("moduleReadyEvent", function(e) {
                     if (typeof window.cpCmndTOCVisible !== 'boolean') throw Error("where is the cpCmndTOCVisible variable?")
                     // if (!window.cpCmndTOCVisible) {
 
-                    self.playing ? self.wasPaused = false : self.wasPaused = true;
+
+                    pd.playing ? pd.wasPaused = false : pd.wasPaused = true;
 
 
-                    if(self.playing) self.pause(window.config.pause.si, window.config.play.si)
+                    if(pd.playing) pd.pause(pd.pauseButton.si, pd.playButton.si)
 
                     window.cpCmndTOCVisible = true;
 
@@ -332,8 +335,8 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 // add correct event listeners to play and pause button
                 
-                playDom.addEventListener('click', () => self.play(window.config.pause.si, window.config.play.si), false);
-                pauseDom.addEventListener('click', () => self.pause(window.config.pause.si, window.config.play.si), false);
+                playDom.addEventListener('click', () => pd.play(pd.pauseButton.si, pd.playButton.si), false);
+                pauseDom.addEventListener('click', () => pd.pause(pd.pauseButton.si, pd.playButton.si), false);
 
 
 
@@ -341,14 +344,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
             }
 
 
+        }
 
-
-
-
-
-        },
-
-        findDOMElementByLocation(top, left) {
+        pd.findDOMElementByLocation = (top, left) => {
 
             if (typeof top !== 'number' || typeof left !== 'number') console.error("The findDOMElementByLocation only expects numbers as arguments")
 
@@ -371,9 +369,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 }
             }
             console.error("could not find a dom element at that location with an `si234-type` id");
-        },
+        }
 
-        getElementByIdOrLocation(configObject) {
+        pd.getElementByIdOrLocation = (configObject) => {
 
             let id = '#' + configObject.si;
             let top = configObject.top;
@@ -383,7 +381,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             if (document.querySelector(id)) return document.querySelector(id)
 
-            else if (top && left) return this.findDOMElementByLocation(top, left)
+            else if (top && left) return pd.findDOMElementByLocation(top, left)
 
             else console.error(`A button with id ${id} and top value of ${top} and left value of ${left} was not found.`)
         }
@@ -394,7 +392,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
 
-    }
+    
 
     pd.initialize();
 })
