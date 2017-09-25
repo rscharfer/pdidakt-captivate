@@ -54,9 +54,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 pd.play(pd.pauseButton.si, pd.playButton.si);
 
-            } 
-
-            else {
+            } else {
 
                 if (pd.reasonNotPlaying === 'pauseButton') {
 
@@ -64,9 +62,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                     cp.show(pd.playButton.si);
 
-                } 
-
-                else if (pd.reasonNotPlaying ==="endOfSlide") {
+                } else if (pd.reasonNotPlaying === "endOfSlide") {
 
                     cp.show(pd.pauseButton.si);
 
@@ -86,10 +82,10 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', (e) => {
 
-            if(!pd.reasonNotPlaying){
-            	pd.reasonNotPlaying = "endOfSlide"
-            	pd.wasPlayingWhenTOCClicked = false;
-            } 
+            if (!pd.reasonNotPlaying) {
+                pd.reasonNotPlaying = "endOfSlide"
+                pd.wasPlayingWhenTOCClicked = false;
+            }
 
         })
 
@@ -151,7 +147,20 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
-            pd.play(pd.pauseButton.si, pd.playButton.si);
+          //  pd.play(pd.pauseButton.si, pd.playButton.si);
+            pd.reasonNotPlaying = null;
+            pd.wasPlayingWhenTOCClicked = true;
+
+            if (window.cpCmndTOCVisible) {
+
+                window.cpCmndTOCVisible = false;
+
+            }
+
+
+            cp.hide(pd.playButton.si);
+
+            cp.show(pd.pauseButton.si);
 
 
             setTimeout(() => {
@@ -185,17 +194,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
         }
 
 
-
-
-
-
         cp.hide(play_si);
 
         cp.show(pause_si);
-
-   
-
-
 
     }
 
@@ -211,14 +212,14 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         playDom.addEventListener('click', () => pd.play(pd.pauseButton.si, pd.playButton.si), false);
         pauseDom.addEventListener('click', (e) => {
-        	pd.reasonNotPlaying = "pauseButton";
-        	pd.wasPlayingWhenTOCClicked = false;
-        	pd.pause(pd.pauseButton.si, pd.playButton.si)
+            pd.reasonNotPlaying = "pauseButton";
+            pd.wasPlayingWhenTOCClicked = false;
+            pd.pause(pd.pauseButton.si, pd.playButton.si)
         }, false);
 
         tocDom.addEventListener('click', (e) => {
 
-            if(!pd.reasonNotPlaying) pd.reasonNotPlaying = "tocButton"
+            if (!pd.reasonNotPlaying) pd.reasonNotPlaying = "tocButton"
 
             window.cpCmndTOCVisible = true;
 
