@@ -4,6 +4,10 @@ window.pd = {};
 // collapseIcon is not really a si id, but normal id
 pd.collapseButton = { si: 'collapseIcon' }
 
+pd.wasPlayingWhenTOCClicked = null;
+
+pd.reasonNotPlaying = null; // 'tocButton', 'pauseButton', 'endOfSlide'
+
 
 // these three funcions are called by the user after the file
 window.configPlay = function(si, top, left) {
@@ -35,20 +39,34 @@ window.addEventListener("moduleReadyEvent", function(e) {
     window.eventEmitterObj = interfaceObj.getEventEmitter();
 
 
-
     pd.configureCollapseButton = () => {
 
         const collapseTocDom = document.querySelector('#collapseIcon')
 
-        if (collapseTocDom) collapseTocDom.addEventListener('click', () => {
+        collapseTocDom.style.height = "31px";
+        collapseTocDom.style.width = "31px";
 
-            if (pd.wasPaused) {
+        collapseTocDom.addEventListener('click', () => {
 
-                if (pd.pausedByUser) {
+            window.cpCmndTOCVisible = false;
+
+            if (pd.wasPlayingWhenTOCClicked) {
+
+                pd.play(pd.pauseButton.si, pd.playButton.si);
+
+            } 
+
+            else {
+
+                if (pd.reasonNotPlaying === 'pauseButton') {
 
                     cp.hide(pd.pauseButton.si);
+
                     cp.show(pd.playButton.si);
-                } else {
+
+                } 
+
+                else if (pd.reasonNotPlaying ==="endOfSlide") {
 
                     cp.show(pd.pauseButton.si);
 
@@ -56,53 +74,29 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
                 }
 
-                window.cpCmndTOCVisible = false;
-
-
-            } else {
-
-                pd.play(pd.pauseButton.si, pd.playButton.si);
-
             }
 
 
         }, false);
 
 
-
-
-        collapseTocDom.style.height = "31px";
-        collapseTocDom.style.width = "31px";
-
-
     }
 
     pd.addPauseListener = () => {
 
-        eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', () => {
+        eventEmitterObj.addEventListener('CPAPI_MOVIEPAUSE', (e) => {
 
-            window.pd.playing = false;
+            if(!pd.reasonNotPlaying){
+            	pd.reasonNotPlaying = "endOfSlide"
+            	pd.wasPlayingWhenTOCClicked = false;
+            } 
+
         })
 
     }
 
 
-	pd.playing = true,
 
-    pd.wasPaused = null,
-
-    pd.pausedByUser = false,
-
-
-
-    pd.siElementExists = (si) => {
-
-        eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
-
-            const element = document.getElementById(si);
-            return element ? true : false;
-        })
-    }
 
 
     pd.adjustTOCCheckmarkMargins = (tocButtonDom) => {
@@ -151,77 +145,14 @@ window.addEventListener("moduleReadyEvent", function(e) {
         slideTitleText.style.display = "none";
     }
 
-
-    pd.getLabelWSlideNumber = (slideNumber) => {
-
-        // slideNumber is zero-based, so slide 1 in project has a slideNumber of 0
-
-        var getSlides = cp.model.data.project_main.slides.split(',');
-        var label = cp.model.data[getSlides[slideNumber]].lb;
-
-        return label
-    }
-
-
-    pd.getSlideNumberWLabel = (label) => {
-
-        var slideNumber;
-        var getSlides = cp.model.data.project_main.slides.split(',');
-        for (var i = 0; i <= getSlides.length; i++) {
-            if (cp.model.data[getSlides[i]].lb === label) {
-                slideNumber = i;
-                break;
-            }
-        }
-
-        return slideNumber
-    }
-
-
-    pd.jumpToPrevBookmark = (bookmark) => {
-        // in Captivate, add a bookmark such as #thisIsMyBookmark to a slide label
-        var getSlides = cp.model.data.project_main.slides.split(',');
-
-        var currentSlide = interfaceObj.getVariableValue('cpInfoCurrentSlide')
-
-        for (let i = currentSlide - 2; i >= 0; i--) {
-
-            if (cp.model.data[getSlides[i]].lb.match(bookmark) !== null) {
-                interfaceObj.setVariableValue('cpCmndGotoSlide', i);
-
-
-                break;
-            }
-        }
-    }
-
-    pd.jumpToNextBookmark = (bookmark) => {
-        // in Captivate, add a bookmark such as #thisIsMyBookmark to a slide label
-        var getSlides = cp.model.data.project_main.slides.split(',');
-
-        var currentSlide = interfaceObj.getVariableValue('cpInfoCurrentSlide')
-
-        for (let i = currentSlide; i < getSlides.length; i++) {
-
-            if (cp.model.data[getSlides[i]].lb.match(bookmark) !== null) {
-                interfaceObj.setVariableValue('cpCmndGotoSlide', i);
-
-
-                break;
-            }
-        }
-    }
-
-
     pd.addSlideEnterListener = () => {
-
-
 
 
 
         eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
             pd.play(pd.pauseButton.si, pd.playButton.si);
+
 
             setTimeout(() => {
 
@@ -241,8 +172,11 @@ window.addEventListener("moduleReadyEvent", function(e) {
     pd.play = (pause_si, play_si) => {
 
 
+        interfaceObj.play()
 
-        pd.pausedByUser = false;
+
+        pd.reasonNotPlaying = null;
+        pd.wasPlayingWhenTOCClicked = true;
 
         if (window.cpCmndTOCVisible) {
 
@@ -251,42 +185,47 @@ window.addEventListener("moduleReadyEvent", function(e) {
         }
 
 
-        pd.playing = true;
+
+
 
 
         cp.hide(play_si);
 
         cp.show(pause_si);
 
-        window.cpCmndResume = 1;
+   
+
+
+
     }
 
     pd.pause = (pause_si, play_si) => {
 
-        window.cpCmndPause = 1;
+        interfaceObj.pause();
         cp.hide(pause_si);
         cp.show(play_si);
-        pd.pausedByUser = true;
     }
 
     pd.addClickListenersToPlayPauseToc = (tocDom, playDom, pauseDom) => {
 
 
         playDom.addEventListener('click', () => pd.play(pd.pauseButton.si, pd.playButton.si), false);
-        pauseDom.addEventListener('click', () => pd.pause(pd.pauseButton.si, pd.playButton.si), false);
+        pauseDom.addEventListener('click', (e) => {
+        	pd.reasonNotPlaying = "pauseButton";
+        	pd.wasPlayingWhenTOCClicked = false;
+        	pd.pause(pd.pauseButton.si, pd.playButton.si)
+        }, false);
 
-        tocDom.addEventListener('click', () => {
+        tocDom.addEventListener('click', (e) => {
+
+            if(!pd.reasonNotPlaying) pd.reasonNotPlaying = "tocButton"
 
             window.cpCmndTOCVisible = true;
 
-            if (pd.playing) {
+            if (pd.wasPlayingWhenTOCClicked) {
 
-                pd.wasPaused = false;
+
                 pd.pause(pd.pauseButton.si, pd.playButton.si)
-
-            } else {
-
-                pd.wasPaused = true;
 
             }
 
