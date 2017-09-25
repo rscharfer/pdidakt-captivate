@@ -147,9 +147,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
-          //  pd.play(pd.pauseButton.si, pd.playButton.si);
+          //  pd.play(pd.pauseButton.si, pd.playButton.si);z
             pd.reasonNotPlaying = null;
-            pd.wasPlayingWhenTOCClicked = true;
+           
 
             if (window.cpCmndTOCVisible) {
 
@@ -164,7 +164,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
 
             setTimeout(() => {
-
+                pd.wasPlayingWhenTOCClicked = true;
                 const tocDom = document.querySelector('#' + pd.tocButton.si) || pd.queryByLocation(pd.tocButton.top, pd.tocButton.left)
                 const playDom = document.querySelector('#' + pd.playButton.si) || pd.queryByLocation(pd.playButton.top, pd.playButton.left)
                 const pauseDom = document.querySelector('#' + pd.pauseButton.si) || pd.queryByLocation(pd.pauseButton.top, pd.pauseButton.left)
