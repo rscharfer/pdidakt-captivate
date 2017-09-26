@@ -168,18 +168,42 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
             cp.show(pd.pauseButton.si);
 
+            let tocDom, playDom, pauseDom;
 
-            setTimeout(() => {
+            const buttonsAvailable = new Promise((resolve,reject)=>{
+                let numberOfChecks = 0;
+
+                const buttonCheckInterval = setInterval(()=>{
+
+                    numberOfChecks++;
+                    tocDom = document.querySelector('#' + pd.tocButton.si) || pd.queryByLocation(pd.tocButton.top, pd.tocButton.left)
+                    playDom = document.querySelector('#' + pd.playButton.si) || pd.queryByLocation(pd.playButton.top, pd.playButton.left)
+                    pauseDom = document.querySelector('#' + pd.pauseButton.si) || pd.queryByLocation(pd.pauseButton.top, pd.pauseButton.left)
+
+                    if(tocDom&&playDom&&pauseDom) {
+                        clearInterval(buttonCheckInterval);
+                        resolve();
+                        console.log(`checked for the dom elements ${numberOfChecks} times.`)
+                    }
+
+                    if(numberOfChecks>10) 
+                        reject();
+
+                },1)
+
+
+            })
+
+
+            buttonsAvailable.then(()=>{   
+     
                 pd.wasPlayingWhenTOCClicked = true;
-                const tocDom = document.querySelector('#' + pd.tocButton.si) || pd.queryByLocation(pd.tocButton.top, pd.tocButton.left)
-                const playDom = document.querySelector('#' + pd.playButton.si) || pd.queryByLocation(pd.playButton.top, pd.playButton.left)
-                const pauseDom = document.querySelector('#' + pd.pauseButton.si) || pd.queryByLocation(pd.pauseButton.top, pd.pauseButton.left)
-
                 pd.addClickListenersToPlayPauseToc(tocDom, playDom, pauseDom);
                 pd.adjustTOCCheckmarkMargins(tocDom);
-                pd.hideTOCSlideTitleHeading();
+                pd.hideTOCSlideTitleHeading();},(e)=>{console.log('could not find the buttons',e)})
+             
 
-            }, 250)
+        
 
         });
     }

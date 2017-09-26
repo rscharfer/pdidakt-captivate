@@ -1,5 +1,9 @@
 'use strict';
 
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
 var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
@@ -164,16 +168,39 @@ window.addEventListener("moduleReadyEvent", function (e) {
 
                         cp.show(pd.pauseButton.si);
 
-                        setTimeout(function () {
-                                pd.wasPlayingWhenTOCClicked = true;
-                                var tocDom = document.querySelector('#' + pd.tocButton.si) || pd.queryByLocation(pd.tocButton.top, pd.tocButton.left);
-                                var playDom = document.querySelector('#' + pd.playButton.si) || pd.queryByLocation(pd.playButton.top, pd.playButton.left);
-                                var pauseDom = document.querySelector('#' + pd.pauseButton.si) || pd.queryByLocation(pd.pauseButton.top, pd.pauseButton.left);
+                        var tocDom = void 0,
+                            playDom = void 0,
+                            pauseDom = void 0;
 
+                        var buttonsAvailable = new _promise2.default(function (resolve, reject) {
+                                var numberOfChecks = 0;
+
+                                var buttonCheckInterval = setInterval(function () {
+
+                                        numberOfChecks++;
+                                        tocDom = document.querySelector('#' + pd.tocButton.si) || pd.queryByLocation(pd.tocButton.top, pd.tocButton.left);
+                                        playDom = document.querySelector('#' + pd.playButton.si) || pd.queryByLocation(pd.playButton.top, pd.playButton.left);
+                                        pauseDom = document.querySelector('#' + pd.pauseButton.si) || pd.queryByLocation(pd.pauseButton.top, pd.pauseButton.left);
+
+                                        if (tocDom && playDom && pauseDom) {
+                                                clearInterval(buttonCheckInterval);
+                                                resolve();
+                                                console.log('checked for the dom elements ' + numberOfChecks + ' times.');
+                                        }
+
+                                        if (numberOfChecks > 10) reject();
+                                }, 1);
+                        });
+
+                        buttonsAvailable.then(function () {
+
+                                pd.wasPlayingWhenTOCClicked = true;
                                 pd.addClickListenersToPlayPauseToc(tocDom, playDom, pauseDom);
                                 pd.adjustTOCCheckmarkMargins(tocDom);
                                 pd.hideTOCSlideTitleHeading();
-                        }, 250);
+                        }, function (e) {
+                                console.log('could not find the buttons', e);
+                        });
                 });
         };
 
