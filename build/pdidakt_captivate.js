@@ -173,7 +173,7 @@ window.addEventListener("moduleReadyEvent", function (e) {
                                 pd.addClickListenersToPlayPauseToc(tocDom, playDom, pauseDom);
                                 pd.adjustTOCCheckmarkMargins(tocDom);
                                 pd.hideTOCSlideTitleHeading();
-                        }, 1000);
+                        }, 250);
                 });
         };
 

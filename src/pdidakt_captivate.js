@@ -179,7 +179,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
                 pd.adjustTOCCheckmarkMargins(tocDom);
                 pd.hideTOCSlideTitleHeading();
 
-            }, 1000)
+            }, 250)
 
         });
     }
@@ -239,6 +239,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
     }
 
     pd.queryByLocation = (top, left) => {
+
 
         if (typeof top !== 'number' || typeof left !== 'number') console.error("The findDOMElementByLocation only expects numbers as arguments")
 
