@@ -46,37 +46,43 @@ window.addEventListener("moduleReadyEvent", function(e) {
         collapseTocDom.style.height = "31px";
         collapseTocDom.style.width = "31px";
 
-        collapseTocDom.addEventListener('click', () => {
+        collapseTocDom.addEventListener('click', pd.hideTOCAndPossiblyPlay, false);
 
-            window.cpCmndTOCVisible = false;
-
-            if (pd.wasPlayingWhenTOCClicked) {
-
-                pd.play(pd.pauseButton.si, pd.playButton.si);
-
-            } else {
-
-                if (pd.reasonNotPlaying === 'pauseButton') {
-
-                    cp.hide(pd.pauseButton.si);
-
-                    cp.show(pd.playButton.si);
-
-                } else if (pd.reasonNotPlaying === "endOfSlide") {
-
-                    cp.show(pd.pauseButton.si);
-
-                    cp.hide(pd.playButton.si);
-
-                }
-
-            }
-
-
-        }, false);
+        collapseTocDom.addEventListener('touchstart', pd.hideTOCAndPossiblyPlay, false);
 
 
     }
+
+    pd.hideTOCAndPossiblyPlay = () => {
+
+        window.cpCmndTOCVisible = false;
+
+        if (pd.wasPlayingWhenTOCClicked) {
+
+            pd.play(pd.pauseButton.si, pd.playButton.si);
+
+        } else {
+
+            if (pd.reasonNotPlaying === 'pauseButton') {
+
+                cp.hide(pd.pauseButton.si);
+
+                cp.show(pd.playButton.si);
+
+            } else if (pd.reasonNotPlaying === "endOfSlide") {
+
+                cp.show(pd.pauseButton.si);
+
+                cp.hide(pd.playButton.si);
+
+            }
+
+        }
+
+    }
+
+
+
 
     pd.addPauseListener = () => {
 
@@ -147,9 +153,9 @@ window.addEventListener("moduleReadyEvent", function(e) {
 
         eventEmitterObj.addEventListener('CPAPI_SLIDEENTER', (e) => {
 
-          //  pd.play(pd.pauseButton.si, pd.playButton.si);z
+            //  pd.play(pd.pauseButton.si, pd.playButton.si);z
             pd.reasonNotPlaying = null;
-           
+
 
             if (window.cpCmndTOCVisible) {
 
@@ -178,7 +184,7 @@ window.addEventListener("moduleReadyEvent", function(e) {
         });
     }
 
-    pd.play = (pause_si, play_si) => {
+    pd.play = () => {
 
 
         interfaceObj.play()
@@ -194,43 +200,42 @@ window.addEventListener("moduleReadyEvent", function(e) {
         }
 
 
-        cp.hide(play_si);
+        cp.hide(pd.playButton.si);
 
-        cp.show(pause_si);
+        cp.show(pd.pauseButton.si);
 
     }
 
-    pd.pause = (pause_si, play_si) => {
+    pd.pause = () => {
 
         interfaceObj.pause();
-        cp.hide(pause_si);
-        cp.show(play_si);
+        cp.hide(pd.pauseButton.si);
+        cp.show(pd.playButton.si);
     }
+
+   
 
     pd.addClickListenersToPlayPauseToc = (tocDom, playDom, pauseDom) => {
 
 
-        playDom.addEventListener('click', () => pd.play(pd.pauseButton.si, pd.playButton.si), false);
-        pauseDom.addEventListener('click', (e) => {
+        ['click', 'touchstart'].forEach(event => playDom.addEventListener(event, pd.play, false));
+
+        ['click', 'touchstart'].forEach(event => pauseDom.addEventListener(event, ()=>{
             pd.reasonNotPlaying = "pauseButton";
             pd.wasPlayingWhenTOCClicked = false;
             pd.pause(pd.pauseButton.si, pd.playButton.si)
-        }, false);
+        }, false));
 
-        tocDom.addEventListener('click', (e) => {
+        ['click', 'touchstart'].forEach(event => tocDom.addEventListener(event, () => {
 
             if (!pd.reasonNotPlaying) pd.reasonNotPlaying = "tocButton"
-
             window.cpCmndTOCVisible = true;
-
             if (pd.wasPlayingWhenTOCClicked) {
-
-
                 pd.pause(pd.pauseButton.si, pd.playButton.si)
 
             }
 
-        }, false);
+        }));
     }
 
     pd.queryByLocation = (top, left) => {
