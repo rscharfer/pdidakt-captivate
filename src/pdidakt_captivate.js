@@ -35,6 +35,15 @@ window.configToc = function(si, top, left) {
 
 window.addEventListener("moduleReadyEvent", function(e) {
 
+	// true if user is using Safari 11 
+	const isSafari11 = navigator.userAgent.indexOf("Safari/604")> -1 ? true : false;
+		console.log("I am using Safari 11",isSafari11)
+		
+		if (isSafari11){
+			cp.show("AudioGrayHinweis");
+			cp.show("AudioOrangeHinweis");
+		}
+
     window.interfaceObj = e.Data;
     window.eventEmitterObj = interfaceObj.getEventEmitter();
 

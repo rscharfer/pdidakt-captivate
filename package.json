@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "babel src -d build",
     "bundle": "webpack",
-    "buildandbundle":"npm run build && npm run bundle"
+    "buildandbundle": "npm run build && npm run bundle"
   },
   "author": "Ryan Scharfer",
   "license": "ISC",

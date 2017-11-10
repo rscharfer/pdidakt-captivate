@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-var _promise = require('babel-runtime/core-js/promise');
+var _promise = require("babel-runtime/core-js/promise");
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var _getIterator2 = require('babel-runtime/core-js/get-iterator');
+var _getIterator2 = require("babel-runtime/core-js/get-iterator");
 
 var _getIterator3 = _interopRequireDefault(_getIterator2);
 
-var _from = require('babel-runtime/core-js/array/from');
+var _from = require("babel-runtime/core-js/array/from");
 
 var _from2 = _interopRequireDefault(_from);
 
@@ -43,6 +43,15 @@ window.configToc = function (si, top, left) {
 // all global varaibles should be prefixed with window
 
 window.addEventListener("moduleReadyEvent", function (e) {
+
+        // true if user is using Safari 11 
+        var isSafari11 = navigator.userAgent.indexOf("Safari/604") > -1 ? true : false;
+        console.log("I am using Safari 11", isSafari11);
+
+        if (isSafari11) {
+                cp.show("AudioGrayHinweis");
+                cp.show("AudioOrangeHinweis");
+        }
 
         window.interfaceObj = e.Data;
         window.eventEmitterObj = interfaceObj.getEventEmitter();
@@ -185,7 +194,7 @@ window.addEventListener("moduleReadyEvent", function (e) {
                                         if (tocDom && playDom && pauseDom) {
                                                 clearInterval(buttonCheckInterval);
                                                 resolve();
-                                                console.log('checked for the dom elements ' + numberOfChecks + ' times.');
+                                                console.log("checked for the dom elements " + numberOfChecks + " times.");
                                         }
 
                                         if (numberOfChecks > 10) reject();
